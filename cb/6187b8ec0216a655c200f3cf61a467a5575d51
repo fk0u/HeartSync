@@ -1,0 +1,30 @@
+src/App.tsx
+  s_3c330e4c140584::t_ad655965ba7d97 243,253,256-257,259,265,273-275,278,282,293,304,322,326,335,350,368,386,404,419,431-433,450,500
+src/components/layout/Navigation.tsx
+  s_3c330e4c140584::t_7a9477ed9297ab 26-32,98
+src/components/calendar/CalendarView.tsx
+  s_3c330e4c140584::t_7a9477ed9297ab 70,72-74,77-78,81,96,103,111,129
+src/components/layout/MobileHeader.tsx
+  s_3c330e4c140584::t_393745f55ddf58 3,35-36
+src/components/dashboard/StatCards.tsx
+  s_3c330e4c140584::t_7a9477ed9297ab 25,32,38-40,43,48,55,75,158,160-161,171,180,184,196,210
+  s_3c330e4c140584::t_83865c9d85d448 211-216
+src/components/layout/MobileToolsSheet.tsx
+  s_3c330e4c140584::t_f531f745378c03 34,46-49,52,78,90,106,122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "cb6187b8ec0216a655c200f3cf61a467a5575d51",
+  "prompts": {},
+  "sessions": {
+    "s_3c330e4c140584": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6342bf13-3703-4c61-939f-4c09988c71dc",
+        "model": "gpt-4.1"
+      },
+      "human_author": "AG-MacMini <kou.real@outlook.com>"
+    }
+  }
+}
