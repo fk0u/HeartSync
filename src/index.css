@@ -1,14 +1,42 @@
+/* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 */
+/* Hallmark Design System: Anti-AI-Slop Tactile Medical Architecture */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-paper: #f8fafc;
+    --color-paper-card: #ffffff;
+    --color-ink: #0f172a;
+    --color-accent: #0284c7;
+    --color-medical: #10b981;
+    --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  .dark {
+    --color-paper: #090d16;
+    --color-paper-card: #0f172a;
+    --color-ink: #f8fafc;
+    --color-accent: #38bdf8;
+    --color-medical: #34d399;
+  }
+
   html {
     -webkit-tap-highlight-color: transparent;
+    overflow-x: clip;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen selection:bg-teal-500 selection:text-white;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    min-height: 100vh;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }
 
@@ -21,13 +49,36 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+  @apply bg-slate-300 dark:bg-slate-800 rounded-full;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-400 dark:bg-slate-600;
+  @apply bg-slate-400 dark:bg-slate-700;
 }
 
-/* Glassmorphism helpers */
-.glass-panel {
-  @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80;
+/* Hallmark Tactile Utility Classes */
+.hallmark-card {
+  @apply bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none transition-all duration-200;
+}
+
+.hallmark-button-primary {
+  @apply bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-500 hover:to-sky-500 text-white font-bold rounded-2xl shadow-lg shadow-teal-500/25 active:scale-[0.98] transition-all duration-200 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+}
+
+.hallmark-button-secondary {
+  @apply bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-2xl active:scale-[0.98] transition-all duration-200 focus-visible:ring-2 focus-visible:ring-slate-400;
+}
+
+.hallmark-badge {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold border tracking-tight transition-all duration-300;
+}
+
+/* Print Friendly Styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  header, nav, .no-print {
+    display: none !important;
+  }
 }

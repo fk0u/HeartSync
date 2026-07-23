@@ -98,6 +98,22 @@ export function classifyBP(systolic: number, diastolic: number): BPCategory {
 }
 
 /**
+ * Calculate Mean Arterial Pressure (MAP)
+ * MAP = Diastolic + (Systolic - Diastolic) / 3
+ */
+export function calculateMAP(systolic: number, diastolic: number): number {
+  return Math.round(diastolic + (systolic - diastolic) / 3);
+}
+
+/**
+ * Calculate Pulse Pressure (PP)
+ * PP = Systolic - Diastolic
+ */
+export function calculatePulsePressure(systolic: number, diastolic: number): number {
+  return Math.round(systolic - diastolic);
+}
+
+/**
  * Classify Pulse / Heart Rate
  */
 export function classifyPulse(pulse: number): { label: string; status: 'normal' | 'low' | 'high'; color: string } {

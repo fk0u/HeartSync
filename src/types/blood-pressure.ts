@@ -64,6 +64,9 @@ export interface BPSummaryStats {
   avgSystolic: number;
   avgDiastolic: number;
   avgPulse: number;
+  avgMAP: number; // Mean Arterial Pressure (mmHg)
+  avgPulsePressure: number; // Pulse Pressure (mmHg)
+  targetComplianceRate: number; // Percentage meeting target (0 - 100%)
   maxSystolic: number;
   minSystolic: number;
   maxDiastolic: number;
@@ -74,3 +77,12 @@ export interface BPSummaryStats {
 }
 
 export type DateFilterRange = '7days' | '30days' | '90days' | 'all' | 'custom';
+export type SortOption = 'date_desc' | 'date_asc' | 'systolic_desc' | 'systolic_asc';
+
+export interface BackupDataFormat {
+  version: string;
+  exportedAt: string;
+  profiles: Profile[];
+  readings: BPReading[];
+  reminders: Reminder[];
+}

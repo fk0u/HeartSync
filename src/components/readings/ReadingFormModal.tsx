@@ -4,6 +4,9 @@ import { useProfiles } from '../../hooks/useProfiles';
 import { db } from '../../db';
 import { classifyBP } from '../../utils/bp-classifier';
 import { BodyPosition, ArmUsed } from '../../types/blood-pressure';
+import { playClickSound, playSuccessChime } from '../../utils/audio-fx';
+import { sanitizeText, validateBPRange } from '../../security/sanitizer';
+import { computeAuditHash } from '../../security/hasher';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Minus, Heart, Calendar, Clock, Tag, MessageSquare, Check } from 'lucide-react';
 import { format } from 'date-fns';
@@ -68,11 +71,17 @@ export const ReadingFormModal: React.FC = () => {
   const currentCategory = classifyBP(systolic, diastolic);
 
   const toggleTag = (tag: string) => {
+    playClickSound();
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag));
     } else {
       setSelectedTags([...selectedTags, tag]);
     }
+  };
+
+  const handleAdjustValue = (setter: React.Dispatch<React.SetStateAction<number>>, delta: number, min: number, max: number) => {
+    playClickSound();
+    setter((prev) => Math.min(max, Math.max(min, prev + delta)));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,9 +91,17 @@ export const ReadingFormModal: React.FC = () => {
       return;
     }
 
+    // Validation
+    const validation = validateBPRange(systolic, diastolic, pulse);
+    if (!validation.valid) {
+      addToast({ type: 'warning', title: 'Data Tidak Valid', message: validation.error });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       const timestampIso = new Date(`${dateStr}T${timeStr}:00`).toISOString();
+      const sanitizedNotes = sanitizeText(notes);
 
       if (editingReading && editingReading.id) {
         await db.readings.update(editingReading.id, {
@@ -95,8 +112,10 @@ export const ReadingFormModal: React.FC = () => {
           position,
           arm,
           tags: selectedTags,
-          notes
+          notes: sanitizedNotes
         });
+
+        playSuccessChime();
         addToast({
           type: 'success',
           title: 'Berhasil Diperbarui',
@@ -112,12 +131,14 @@ export const ReadingFormModal: React.FC = () => {
           position,
           arm,
           tags: selectedTags,
-          notes
+          notes: sanitizedNotes
         });
+
+        playSuccessChime();
         addToast({
           type: 'success',
           title: 'Berhasil Disimpan',
-          message: `Tensi ${systolic}/${diastolic} mmHg tersimpan di jurnal kesehatan.`
+          message: `Tensi real ${systolic}/${diastolic} mmHg tersimpan di jurnal kesehatan.`
         });
       }
 
@@ -147,8 +168,8 @@ export const ReadingFormModal: React.FC = () => {
         >
           {/* Header */}
           <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
-            <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
-              {editingReading ? 'Edit Catatan Tensi' : 'Catat Tekanan Darah'}
+            <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">
+              {editingReading ? 'Edit Catatan Tensi Real' : 'Catat Tekanan Darah Real'}
             </h3>
             <button
               onClick={closeModal}
@@ -159,14 +180,14 @@ export const ReadingFormModal: React.FC = () => {
           </div>
 
           {/* Form Body */}
-          <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-6 flex-1">
+          <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-6 flex-1 text-xs">
             
             {/* Live Category Preview Badge */}
             <div className={`p-4 rounded-2xl border ${currentCategory.bgLightClass} ${currentCategory.borderClass} flex items-center justify-between transition-colors duration-300`}>
               <div className="flex items-center gap-3">
                 <span className={`w-3.5 h-3.5 rounded-full ${currentCategory.colorClass} animate-pulse`}></span>
                 <div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Klasifikasi AHA:</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Klasifikasi AHA:</span>
                   <div className={`text-sm font-extrabold ${currentCategory.textClass}`}>
                     {currentCategory.label}
                   </div>
@@ -191,7 +212,7 @@ export const ReadingFormModal: React.FC = () => {
                 <div className="flex items-center justify-between gap-2">
                   <button
                     type="button"
-                    onClick={() => setSystolic((s) => Math.max(60, s - 1))}
+                    onClick={() => handleAdjustValue(setSystolic, -1, 50, 250)}
                     className="w-10 h-10 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-lg shadow-sm hover:bg-slate-100 active:scale-90 transition-all"
                   >
                     <Minus className="w-4 h-4" />
@@ -202,12 +223,12 @@ export const ReadingFormModal: React.FC = () => {
                     onChange={(e) => setSystolic(Number(e.target.value))}
                     min={50}
                     max={250}
-                    className="w-20 text-center text-3xl font-extrabold text-slate-900 dark:text-slate-100 bg-transparent focus:outline-none"
+                    className="w-20 text-center text-3xl font-black text-slate-900 dark:text-slate-100 bg-transparent focus:outline-none"
                     required
                   />
                   <button
                     type="button"
-                    onClick={() => setSystolic((s) => Math.min(250, s + 1))}
+                    onClick={() => handleAdjustValue(setSystolic, +1, 50, 250)}
                     className="w-10 h-10 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-lg shadow-sm hover:bg-slate-100 active:scale-90 transition-all"
                   >
                     <Plus className="w-4 h-4" />
@@ -218,7 +239,7 @@ export const ReadingFormModal: React.FC = () => {
                     <button
                       key={val}
                       type="button"
-                      onClick={() => setSystolic((s) => Math.min(250, Math.max(50, s + val)))}
+                      onClick={() => handleAdjustValue(setSystolic, val, 50, 250)}
                       className="px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors"
                     >
                       {val > 0 ? `+${val}` : val}
@@ -238,7 +259,7 @@ export const ReadingFormModal: React.FC = () => {
                 <div className="flex items-center justify-between gap-2">
                   <button
                     type="button"
-                    onClick={() => setDiastolic((d) => Math.max(40, d - 1))}
+                    onClick={() => handleAdjustValue(setDiastolic, -1, 40, 150)}
                     className="w-10 h-10 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-lg shadow-sm hover:bg-slate-100 active:scale-90 transition-all"
                   >
                     <Minus className="w-4 h-4" />
@@ -249,12 +270,12 @@ export const ReadingFormModal: React.FC = () => {
                     onChange={(e) => setDiastolic(Number(e.target.value))}
                     min={40}
                     max={150}
-                    className="w-20 text-center text-3xl font-extrabold text-slate-900 dark:text-slate-100 bg-transparent focus:outline-none"
+                    className="w-20 text-center text-3xl font-black text-slate-900 dark:text-slate-100 bg-transparent focus:outline-none"
                     required
                   />
                   <button
                     type="button"
-                    onClick={() => setDiastolic((d) => Math.min(150, d + 1))}
+                    onClick={() => handleAdjustValue(setDiastolic, +1, 40, 150)}
                     className="w-10 h-10 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-lg shadow-sm hover:bg-slate-100 active:scale-90 transition-all"
                   >
                     <Plus className="w-4 h-4" />
@@ -265,7 +286,7 @@ export const ReadingFormModal: React.FC = () => {
                     <button
                       key={val}
                       type="button"
-                      onClick={() => setDiastolic((d) => Math.min(150, Math.max(40, d + val)))}
+                      onClick={() => handleAdjustValue(setDiastolic, val, 40, 150)}
                       className="px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors"
                     >
                       {val > 0 ? `+${val}` : val}
@@ -293,7 +314,7 @@ export const ReadingFormModal: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setPulse((p) => Math.max(40, p - 1))}
+                  onClick={() => handleAdjustValue(setPulse, -1, 30, 220)}
                   className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-sm shadow-sm"
                 >
                   <Minus className="w-3.5 h-3.5" />
@@ -309,7 +330,7 @@ export const ReadingFormModal: React.FC = () => {
                 />
                 <button
                   type="button"
-                  onClick={() => setPulse((p) => Math.min(220, p + 1))}
+                  onClick={() => handleAdjustValue(setPulse, +1, 30, 220)}
                   className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-sm shadow-sm"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -357,7 +378,10 @@ export const ReadingFormModal: React.FC = () => {
                     <button
                       key={pos}
                       type="button"
-                      onClick={() => setPosition(pos)}
+                      onClick={() => {
+                        playClickSound();
+                        setPosition(pos);
+                      }}
                       className={`py-1.5 rounded-lg text-[11px] font-semibold capitalize transition-all ${
                         position === pos
                           ? 'bg-white dark:bg-slate-700 text-teal-600 dark:text-teal-400 shadow-sm'
@@ -379,7 +403,10 @@ export const ReadingFormModal: React.FC = () => {
                     <button
                       key={a}
                       type="button"
-                      onClick={() => setArm(a)}
+                      onClick={() => {
+                        playClickSound();
+                        setArm(a);
+                      }}
                       className={`py-1.5 rounded-lg text-[11px] font-semibold capitalize transition-all ${
                         arm === a
                           ? 'bg-white dark:bg-slate-700 text-teal-600 dark:text-teal-400 shadow-sm'
@@ -439,9 +466,9 @@ export const ReadingFormModal: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-500 hover:to-sky-500 text-white font-bold text-sm shadow-xl shadow-teal-500/25 active:scale-98 transition-all disabled:opacity-50"
+                className="hallmark-button-primary w-full py-3.5 text-sm"
               >
-                {isSubmitting ? 'Menyimpan...' : editingReading ? 'Simpan Perubahan' : 'Simpan Catatan Tensi'}
+                {isSubmitting ? 'Menyimpan...' : editingReading ? 'Simpan Perubahan' : 'Simpan Catatan Tensi Real'}
               </button>
             </div>
 

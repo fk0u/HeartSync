@@ -2,9 +2,8 @@ import React, { useRef } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { useProfiles } from '../../hooks/useProfiles';
 import { db } from '../../db';
-import { BPCategoryKey, DateFilterRange, BPReading } from '../../types/blood-pressure';
-import { BP_CATEGORIES } from '../../utils/bp-classifier';
-import { Search, Filter, Download, Upload, X } from 'lucide-react';
+import { BPCategoryKey, DateFilterRange, BPReading, BackupDataFormat } from '../../types/blood-pressure';
+import { Search, Filter, Download, Upload, X, Database } from 'lucide-react';
 
 export const HistoryFilter: React.FC = () => {
   const searchQuery = useAppStore((state) => state.searchQuery);
@@ -14,9 +13,10 @@ export const HistoryFilter: React.FC = () => {
   const categoryFilter = useAppStore((state) => state.categoryFilter);
   const setCategoryFilter = useAppStore((state) => state.setCategoryFilter);
   const addToast = useAppStore((state) => state.addToast);
-  const { activeProfileId, activeProfile } = useProfiles();
+  const { activeProfileId, activeProfile, switchProfile } = useProfiles();
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const csvInputRef = useRef<HTMLInputElement>(null);
+  const jsonInputRef = useRef<HTMLInputElement>(null);
 
   // Export CSV helper
   const handleExportCSV = async () => {
@@ -44,12 +44,82 @@ export const HistoryFilter: React.FC = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `HeartSync_Backup_${activeProfile?.name || 'User'}_${new Date().toISOString().slice(0,10)}.csv`);
+    link.setAttribute('download', `HeartSync_${activeProfile?.name || 'User'}_${new Date().toISOString().slice(0,10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
     addToast({ type: 'success', title: 'Ekspor CSV Berhasil', message: `${readings.length} data tensi berhasil diekspor.` });
+  };
+
+  // Export Full JSON Backup
+  const handleExportJSON = async () => {
+    try {
+      const profiles = await db.profiles.toArray();
+      const readings = await db.readings.toArray();
+      const reminders = await db.reminders.toArray();
+
+      const backup: BackupDataFormat = {
+        version: '1.1.0',
+        exportedAt: new Date().toISOString(),
+        profiles,
+        readings,
+        reminders
+      };
+
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backup, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute('href', dataStr);
+      downloadAnchor.setAttribute('download', `HeartSync_Full_Backup_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      addToast({ type: 'success', title: 'Cadangan JSON Siap', message: 'Seluruh profil & riwayat berhasil disimpan.' });
+    } catch (err) {
+      addToast({ type: 'error', title: 'Gagal Ekspor JSON', message: 'Terjadi kesalahan ekspor database.' });
+    }
+  };
+
+  // Import Full JSON Restore
+  const handleImportJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      try {
+        const content = evt.target?.result as string;
+        const backupData: BackupDataFormat = JSON.parse(content);
+
+        if (!backupData.profiles || !backupData.readings) {
+          throw new Error('Format JSON cadangan tidak valid');
+        }
+
+        await db.profiles.clear();
+        await db.readings.clear();
+        await db.reminders.clear();
+
+        await db.profiles.bulkAdd(backupData.profiles);
+        await db.readings.bulkAdd(backupData.readings);
+        if (backupData.reminders) {
+          await db.reminders.bulkAdd(backupData.reminders);
+        }
+
+        if (backupData.profiles.length > 0) {
+          switchProfile(backupData.profiles[0].id);
+        }
+
+        addToast({
+          type: 'success',
+          title: 'Restorasi Database Berhasil',
+          message: `${backupData.profiles.length} profil dan ${backupData.readings.length} pencatatan berhasil dipulihkan.`
+        });
+      } catch (err) {
+        addToast({ type: 'error', title: 'Gagal Impor JSON', message: 'File JSON cadangan rusak atau tidak valid.' });
+      }
+    };
+    reader.readAsText(file);
   };
 
   // Import CSV helper
@@ -86,7 +156,7 @@ export const HistoryFilter: React.FC = () => {
           await db.readings.bulkAdd(newReadings);
           addToast({
             type: 'success',
-            title: 'Impor Data Berhasil',
+            title: 'Impor CSV Berhasil',
             message: `${newReadings.length} data tensi telah ditambahkan.`
           });
         }
@@ -123,31 +193,48 @@ export const HistoryFilter: React.FC = () => {
           )}
         </div>
 
-        {/* Export / Import CSV Backup Actions */}
-        <div className="flex items-center gap-2 self-end sm:self-auto">
+        {/* Export / Import Actions */}
+        <div className="flex items-center gap-1.5 flex-wrap self-end sm:self-auto">
           <button
             onClick={handleExportCSV}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors"
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors"
             title="Ekspor Data ke File CSV"
           >
             <Download className="w-3.5 h-3.5" />
-            Ekspor CSV
+            CSV
           </button>
 
           <button
-            onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors"
-            title="Impor Data dari File CSV"
+            onClick={handleExportJSON}
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-teal-50 dark:bg-teal-950/60 hover:bg-teal-100 dark:hover:bg-teal-900/60 text-teal-700 dark:text-teal-300 font-semibold text-xs transition-colors"
+            title="Backup Seluruh Database JSON"
+          >
+            <Database className="w-3.5 h-3.5" />
+            Backup JSON
+          </button>
+
+          <button
+            onClick={() => jsonInputRef.current?.click()}
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors"
+            title="Pulihkan Cadangan Database JSON"
           >
             <Upload className="w-3.5 h-3.5" />
-            Impor CSV
+            Restore
           </button>
 
           <input
-            ref={fileInputRef}
+            ref={csvInputRef}
             type="file"
             accept=".csv"
             onChange={handleImportCSV}
+            className="hidden"
+          />
+
+          <input
+            ref={jsonInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleImportJSON}
             className="hidden"
           />
         </div>

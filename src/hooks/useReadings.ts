@@ -2,8 +2,9 @@ import { useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
 import { useAppStore } from '../store/useAppStore';
+import { useProfiles } from './useProfiles';
 import { BPReading, BPSummaryStats, BPCategoryKey } from '../types/blood-pressure';
-import { classifyBP } from '../utils/bp-classifier';
+import { classifyBP, calculateMAP, calculatePulsePressure } from '../utils/bp-classifier';
 import { parseISO, subDays, isAfter, isBefore, startOfDay, endOfDay } from 'date-fns';
 
 export function useReadings() {
@@ -13,6 +14,8 @@ export function useReadings() {
   const customEndDate = useAppStore((state) => state.customEndDate);
   const searchQuery = useAppStore((state) => state.searchQuery);
   const categoryFilter = useAppStore((state) => state.categoryFilter);
+
+  const { activeProfile } = useProfiles();
 
   // Fetch all readings for active profile sorted by timestamp desc
   const rawReadings = useLiveQuery(
@@ -73,7 +76,7 @@ export function useReadings() {
     return result;
   }, [rawReadings, dateFilter, customStartDate, customEndDate, categoryFilter, searchQuery]);
 
-  // Compute summary statistics
+  // Compute summary statistics including MAP, Pulse Pressure, and Target Compliance
   const stats: BPSummaryStats = useMemo(() => {
     if (!filteredReadings || filteredReadings.length === 0) {
       return {
@@ -81,6 +84,9 @@ export function useReadings() {
         avgSystolic: 0,
         avgDiastolic: 0,
         avgPulse: 0,
+        avgMAP: 0,
+        avgPulsePressure: 0,
+        targetComplianceRate: 0,
         maxSystolic: 0,
         minSystolic: 0,
         maxDiastolic: 0,
@@ -93,10 +99,17 @@ export function useReadings() {
     let sumSys = 0;
     let sumDia = 0;
     let sumPulse = 0;
+    let sumMAP = 0;
+    let sumPP = 0;
+    let compliantCount = 0;
+
     let maxSys = -Infinity;
     let minSys = Infinity;
     let maxDia = -Infinity;
     let minDia = Infinity;
+
+    const targetSys = activeProfile?.targetSystolic || 120;
+    const targetDia = activeProfile?.targetDiastolic || 80;
 
     const counts: Record<BPCategoryKey, number> = {
       normal: 0,
@@ -110,6 +123,15 @@ export function useReadings() {
       sumSys += r.systolic;
       sumDia += r.diastolic;
       sumPulse += r.pulse;
+
+      const map = calculateMAP(r.systolic, r.diastolic);
+      const pp = calculatePulsePressure(r.systolic, r.diastolic);
+      sumMAP += map;
+      sumPP += pp;
+
+      if (r.systolic <= targetSys && r.diastolic <= targetDia) {
+        compliantCount++;
+      }
 
       if (r.systolic > maxSys) maxSys = r.systolic;
       if (r.systolic < minSys) minSys = r.systolic;
@@ -135,6 +157,9 @@ export function useReadings() {
       avgSystolic: Math.round(sumSys / total),
       avgDiastolic: Math.round(sumDia / total),
       avgPulse: Math.round(sumPulse / total),
+      avgMAP: Math.round(sumMAP / total),
+      avgPulsePressure: Math.round(sumPP / total),
+      targetComplianceRate: Math.round((compliantCount / total) * 100),
       maxSystolic: maxSys,
       minSystolic: minSys,
       maxDiastolic: maxDia,
@@ -143,7 +168,7 @@ export function useReadings() {
       categoryCounts: counts,
       mostFrequentCategory: mostFreq
     };
-  }, [filteredReadings]);
+  }, [filteredReadings, activeProfile]);
 
   return {
     rawReadings,
