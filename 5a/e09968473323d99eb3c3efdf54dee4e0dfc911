@@ -1,0 +1,43 @@
+src/components/reports/ExportPdfModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 63
+src/components/dash/SodiumTrackerModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 43
+src/components/security/SecurityBackupModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 196
+src/components/emergency/FamilySOSModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 39
+src/components/common/KnowledgeGuideModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 16
+src/components/habits/HabitsTrackerModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 130
+src/components/analytics/AdvancedMetricsModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 24
+src/components/timer/BPRestTimerModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 65
+src/components/reminders/ReminderModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 120
+src/components/readings/ReadingFormModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 193
+src/components/profiles/ProfileModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 135
+src/components/common/ConfirmModal.tsx
+  s_3c330e4c140584::t_b96b389bea893e 30
+src/components/meds/MedicationTrackerModal.tsx
+  s_3c330e4c140584::t_2f05702ad22c39 66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5ae09968473323d99eb3c3efdf54dee4e0dfc911",
+  "prompts": {},
+  "sessions": {
+    "s_3c330e4c140584": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6342bf13-3703-4c61-939f-4c09988c71dc",
+        "model": "gpt-4.1"
+      },
+      "human_author": "AG-MacMini <kou.real@outlook.com>"
+    }
+  }
+}
