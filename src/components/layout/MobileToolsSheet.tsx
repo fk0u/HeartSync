@@ -31,6 +31,7 @@ export const MobileToolsSheet: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
             onClick={() => {
               playClickSound();
               closeSheet();
@@ -42,13 +43,13 @@ export const MobileToolsSheet: React.FC = () => {
             aria-modal="true"
             aria-label="Menu tambahan mobile"
             className="fixed inset-x-0 bottom-0 z-[70] md:hidden px-3 pb-3"
-            initial={{ y: 24, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 24, opacity: 0 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 260 }}
+            initial={{ y: 32, opacity: 0, scale: 0.98 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 32, opacity: 0, scale: 0.98 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 300, mass: 0.9 }}
           >
             <div className="mx-auto max-w-md rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white/96 dark:bg-slate-900/96 backdrop-blur-2xl shadow-2xl shadow-slate-950/25 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between px-4 py-4 border-b border-slate-200 dark:border-slate-800">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Lainnya</p>
                   <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">Aksi Cepat Thumb-Zone</h3>
@@ -74,7 +75,7 @@ export const MobileToolsSheet: React.FC = () => {
                     closeSheet();
                     openProfileModal();
                   }}
-                  className="min-h-20 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-start justify-between p-4 text-left active:scale-95 transition-all"
+                  className="min-h-[88px] rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-start justify-between p-4 text-left active:scale-95 transition-all"
                 >
                   <UserRound className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   <div>
@@ -86,7 +87,7 @@ export const MobileToolsSheet: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => goTo('/settings')}
-                  className="min-h-20 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-start justify-between p-4 text-left active:scale-95 transition-all"
+                  className="min-h-[88px] rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-start justify-between p-4 text-left active:scale-95 transition-all"
                 >
                   <Settings className="w-5 h-5 text-sky-600 dark:text-sky-400" />
                   <div>
@@ -102,7 +103,7 @@ export const MobileToolsSheet: React.FC = () => {
                     closeSheet();
                     openReminderModal();
                   }}
-                  className="min-h-20 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-start justify-between p-4 text-left active:scale-95 transition-all"
+                  className="min-h-[88px] rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-start justify-between p-4 text-left active:scale-95 transition-all"
                 >
                   <Bell className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                   <div>
@@ -118,7 +119,7 @@ export const MobileToolsSheet: React.FC = () => {
                     closeSheet();
                     openExportPdfModal();
                   }}
-                  className="min-h-20 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-start justify-between p-4 text-left active:scale-95 transition-all"
+                  className="min-h-[88px] rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-start justify-between p-4 text-left active:scale-95 transition-all"
                 >
                   <FileText className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   <div>

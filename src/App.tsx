@@ -240,7 +240,7 @@ export function App() {
       <Header />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6 md:space-y-8">
 
         {screenKey === 'profile' ? (
           <ProfilePage />
@@ -250,19 +250,19 @@ export function App() {
           <>
         {/* TAB 1: DASHBOARD */}
         {activeTab === 'dashboard' && (
-          <div className="space-y-6 animate-in fade-in duration-300">
+          <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300">
             
             {/* Apple SwiftUI Pull/Tap-to-Refresh & Cache Info Bar */}
-            <div className="flex items-center justify-between px-1 text-xs">
-              <div className="flex items-center gap-1.5 text-slate-400 font-semibold">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-1 text-xs">
+              <div className="flex items-center gap-2 text-slate-400 font-semibold min-w-0">
                 <Clock className="w-3.5 h-3.5" />
-                <span>Cache: {cacheTimestamp ? `Terakhir sinkron ${new Date(cacheTimestamp).toLocaleTimeString('id-ID')}` : 'Belum sinkron'}</span>
+                <span className="min-w-0 truncate">Cache: {cacheTimestamp ? `Terakhir sinkron ${new Date(cacheTimestamp).toLocaleTimeString('id-ID')}` : 'Belum sinkron'}</span>
               </div>
               <button
                 type="button"
                 onClick={handleManualCacheRefresh}
                 disabled={isDataRefreshing}
-                className="inline-flex items-center gap-1.5 font-bold text-teal-600 dark:text-teal-400 hover:underline active:scale-95 transition-all"
+                className="inline-flex items-center gap-2 font-bold text-teal-600 dark:text-teal-400 hover:underline active:scale-95 transition-all self-start sm:self-auto"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isDataRefreshing ? 'animate-spin' : ''}`} />
                 {isDataRefreshing ? 'Menyinkronkan...' : 'Segarkan Data'}
@@ -270,16 +270,16 @@ export function App() {
             </div>
 
             {/* Quick Rest Protocol Banner */}
-            <div className="hallmark-card p-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gradient-to-r from-teal-500/10 via-sky-500/10 to-transparent border border-teal-500/30">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-2xl bg-teal-500 text-white shadow-md shadow-teal-500/20">
+            <div className="hallmark-card p-4 md:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-gradient-to-r from-teal-500/10 via-sky-500/10 to-transparent border border-teal-500/30">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="p-2 rounded-2xl bg-teal-500 text-white shadow-md shadow-teal-500/20 shrink-0">
                   <Timer className="w-5 h-5" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h4 className="text-xs font-black text-slate-900 dark:text-slate-100">
                     Protokol Istirahat Medis (5 Menit)
                   </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  <p className="text-[11px] leading-4 text-slate-500 dark:text-slate-400">
                     Rilekskan pikiran dan tubuh sebelum melakukan pengukuran tekanan darah.
                   </p>
                 </div>
@@ -290,7 +290,7 @@ export function App() {
                   playClickSound();
                   setIsRestTimerOpen(true);
                 }}
-                className="hallmark-button-secondary px-4 py-2 text-xs shrink-0 font-bold active:scale-95"
+                className="hallmark-button-secondary px-4 py-3 text-xs shrink-0 font-bold active:scale-95 min-h-11"
               >
                 Mulai Timer
               </button>
@@ -301,7 +301,7 @@ export function App() {
 
             {/* Loader / Stat Cards */}
             {isLoading || isDataRefreshing ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
                 <div className="md:col-span-2">
                   <ShimmerSkeletonCard type="stats" />
                 </div>
@@ -319,11 +319,11 @@ export function App() {
             )}
 
             {/* SwiftUI Quick Tools & Accessibility Grid */}
-            <div className="space-y-3">
+            <div className="space-y-4 md:space-y-3">
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 Peralatan &amp; Pelacak Kebiasaan Gaya Hidup
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 md:gap-3">
                 
                 {/* Habits & Sleep Tracker */}
                 <button
@@ -332,7 +332,7 @@ export function App() {
                     playClickSound();
                     setIsHabitsModalOpen(true);
                   }}
-                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/20 dark:bg-indigo-950/10"
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/20 dark:bg-indigo-950/10 min-h-32"
                 >
                   <div className="p-2 rounded-xl bg-indigo-500 text-white w-fit shadow-md shadow-indigo-500/20">
                     <Moon className="w-5 h-5" />
@@ -347,7 +347,7 @@ export function App() {
                 <button
                   type="button"
                   onClick={handleSpeakLatestReading}
-                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer min-h-32"
                 >
                   <div className="p-2 rounded-xl bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 w-fit">
                     <Volume2 className="w-5 h-5" />
@@ -365,7 +365,7 @@ export function App() {
                     playClickSound();
                     setIsSodiumModalOpen(true);
                   }}
-                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer min-h-32"
                 >
                   <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 w-fit">
                     <Utensils className="w-5 h-5" />
@@ -383,7 +383,7 @@ export function App() {
                     playClickSound();
                     setIsMedModalOpen(true);
                   }}
-                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer min-h-32"
                 >
                   <div className="p-2 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 w-fit">
                     <Pill className="w-5 h-5" />
@@ -401,7 +401,7 @@ export function App() {
                     playClickSound();
                     setIsSOSModalOpen(true);
                   }}
-                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 border-rose-200 dark:border-rose-900/60 bg-rose-50/20 dark:bg-rose-950/10 cursor-pointer"
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 border-rose-200 dark:border-rose-900/60 bg-rose-50/20 dark:bg-rose-950/10 cursor-pointer min-h-32"
                 >
                   <div className="p-2 rounded-xl bg-rose-500 text-white w-fit shadow-md shadow-rose-500/20">
                     <AlertTriangle className="w-5 h-5" />
@@ -416,7 +416,7 @@ export function App() {
             </div>
 
             {/* Responsive Dashboard Split Layout for Desktop */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 items-start">
               
               {/* Left Column: Trend Graph */}
               <div className="lg:col-span-2">
@@ -428,9 +428,9 @@ export function App() {
               </div>
 
               {/* Right Column: Recent Readings */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-black text-slate-900 dark:text-slate-100">
+              <div className="space-y-4 md:space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-sm font-black text-slate-900 dark:text-slate-100 min-w-0">
                     Catatan Terbaru ({activeProfile?.name || 'Pasien'})
                   </h3>
                   {readings.length > 0 && (
@@ -447,7 +447,7 @@ export function App() {
                 {isLoading || isDataRefreshing ? (
                   <ShimmerSkeletonCard type="list" />
                 ) : readings.length > 0 ? (
-                  <div className="space-y-3">
+                    <div className="space-y-3">
                     {readings.slice(0, 3).map((r) => (
                       <ReadingCard
                         key={r.id}
@@ -497,7 +497,7 @@ export function App() {
             {isLoading || isDataRefreshing ? (
               <ShimmerSkeletonCard type="list" />
             ) : readings.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                 {readings.map((r) => (
                   <ReadingCard
                     key={r.id}

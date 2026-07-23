@@ -23,7 +23,13 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 px-3 pb-safe pt-2 bg-gradient-to-t from-slate-950/95 via-slate-950/80 to-transparent pointer-events-none md:hidden">
+    <motion.nav
+      className="fixed bottom-0 left-0 right-0 z-50 px-3 pb-safe pt-2 bg-gradient-to-t from-slate-950/95 via-slate-950/80 to-transparent pointer-events-none md:hidden"
+      initial={{ y: 24, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 24, opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 26, mass: 0.8 }}
+    >
       <div className="max-w-md mx-auto relative pointer-events-auto">
         <div className="bg-white/92 dark:bg-slate-900/92 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800 rounded-[28px] px-2 py-2 shadow-2xl shadow-slate-950/20">
           <div className="grid grid-cols-5 gap-1.5 items-end">
@@ -89,6 +95,6 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
