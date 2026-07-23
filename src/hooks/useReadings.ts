@@ -32,8 +32,7 @@ export function useReadings() {
         .reverse()
         .sortBy('timestamp');
     },
-    [activeProfileId],
-    [] as BPReading[]
+    [activeProfileId]
   );
 
   // Set loading state dynamically based on Dexie resolution
@@ -46,11 +45,12 @@ export function useReadings() {
     }
   }, [rawReadings, setDataLoading, updateCacheTimestamp]);
 
+  // Fallback to empty array if undefined
+  const rawReadingsList = rawReadings || [];
+
   // Filtered readings based on store filters
   const filteredReadings = useMemo(() => {
-    if (!rawReadings) return [];
-
-    let result = [...rawReadings];
+    let result = [...rawReadingsList];
 
     // 1. Date filter
     const now = new Date();
@@ -89,11 +89,11 @@ export function useReadings() {
     }
 
     return result;
-  }, [rawReadings, dateFilter, customStartDate, customEndDate, categoryFilter, searchQuery]);
+  }, [rawReadingsList, dateFilter, customStartDate, customEndDate, categoryFilter, searchQuery]);
 
   // Compute summary statistics including MAP, Pulse Pressure, and Target Compliance
   const stats: BPSummaryStats = useMemo(() => {
-    if (!filteredReadings || filteredReadings.length === 0) {
+    if (filteredReadings.length === 0) {
       return {
         totalReadings: 0,
         avgSystolic: 0,
@@ -186,7 +186,7 @@ export function useReadings() {
   }, [filteredReadings, activeProfile]);
 
   return {
-    rawReadings,
+    rawReadings: rawReadingsList,
     readings: filteredReadings,
     stats,
     hasData: filteredReadings.length > 0,

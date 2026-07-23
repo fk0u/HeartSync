@@ -7,7 +7,8 @@ export function useProfiles() {
   const activeProfileId = useAppStore((state) => state.activeProfileId);
   const setActiveProfileId = useAppStore((state) => state.setActiveProfileId);
 
-  const profiles = useLiveQuery(() => db.profiles.toArray(), [], [] as Profile[]);
+  // Fallback to empty array if live query returns undefined initially
+  const profiles = useLiveQuery(() => db.profiles.toArray(), []) || [];
   
   const activeProfile = profiles.find((p) => p.id === activeProfileId) || profiles[0];
 

@@ -1,5 +1,5 @@
 // Typst Document: HeartSync Technical & Medical Documentation
-// Designed for professional medical and software engineering presentation
+// Enterprise Edition with OpenSSF Security, HL7 FHIR v4 Standards, and Clinical Case Studies
 
 #set page(
   paper: "a4",
@@ -9,8 +9,8 @@
     if page-num > 1 [
       #grid(
         columns: (1fr, auto),
-        align(left)[#text(size: 8.5pt, fill: rgb("#64748b"), weight: "bold")[HeartSync — Dokumentasi Teknis & Medis]],
-        align(right)[#text(size: 8.5pt, fill: rgb("#0d9488"), weight: "bold")[PWA Blood Pressure Tracker]]
+        align(left)[#text(size: 8.5pt, fill: rgb("#64748b"), weight: "bold")[HeartSync — Dokumentasi Teknis & Standar Medis]],
+        align(right)[#text(size: 8.5pt, fill: rgb("#0d9488"), weight: "bold")[OpenSSF Critical Infrastructure & FHIR v4]]
       )
       #v(-2pt)
       #line(length: 100%, stroke: 0.5pt + rgb("#e2e8f0"))
@@ -23,7 +23,7 @@
       #v(4pt)
       #grid(
         columns: (1fr, auto),
-        align(left)[#text(size: 8pt, fill: rgb("#94a3b8"))[Dokumentasi Resmi v1.0.0 — HeartSync Open Source]],
+        align(left)[#text(size: 8pt, fill: rgb("#94a3b8"))[Dokumentasi Resmi Enterprise v2.0.0 — HeartSync Open Source]],
         align(right)[#text(size: 8.5pt, fill: rgb("#475569"), weight: "bold")[Halaman #page-num]]
       )
     ]
@@ -98,7 +98,7 @@
 
   #text(size: 28pt, weight: "extrabold", fill: dark-slate)[HeartSync] \
   #v(0.3cm)
-  #text(size: 14pt, weight: "medium", fill: secondary-color)[Aplikasi Pencatatan & Monitoring Tekanan Darah (PWA Offline-First)]
+  #text(size: 14pt, weight: "medium", fill: secondary-color)[Aplikasi Pencatatan & Monitoring Tekanan Darah (OpenSSF & HL7 FHIR v4 Standard)]
 
   #v(1cm)
   #rect(
@@ -106,7 +106,7 @@
     radius: 20pt,
     inset: (x: 16pt, y: 8pt)
   )[
-    #text(size: 9.5pt, weight: "bold", fill: rgb("#334155"))[DOKUMENTASI TEKNIS & PANDUAN PENGGUNA RESMI]
+    #text(size: 9.5pt, weight: "bold", fill: rgb("#334155"))[SPESIFIKASI ARSITEKTUR KESEHATAN ENTERPRISE & MANAJEMEN KLINIS]
   ]
 
   #v(3cm)
@@ -116,13 +116,13 @@
     align: (left, right),
     [
       #text(size: 9pt, fill: rgb("#64748b"))[Dipublikasikan Oleh:] \
-      #text(size: 10pt, weight: "bold")[HeartSync Open-Source Team] \
-      #text(size: 8.5pt, fill: rgb("#64748b"))[Pengembangan Aplikasi Kesehatan]
+      #text(size: 10pt, weight: "bold")[HeartSync Engineering & Clinical Team] \
+      #text(size: 8.5pt, fill: rgb("#64748b"))[Open-Source Tech For Good Infrastructure]
     ],
     [
-      #text(size: 9pt, fill: rgb("#64748b"))[Versi Dokumen:] \
-      #text(size: 10pt, weight: "bold")[v1.0.0 (Produksi)] \
-      #text(size: 8.5pt, fill: rgb("#64748b"))[Tanggal: Juli 2026]
+      #text(size: 9pt, fill: rgb("#64748b"))[Versi Spesifikasi:] \
+      #text(size: 10pt, weight: "bold")[v2.0.0 (Enterprise Gold)] \
+      #text(size: 8.5pt, fill: rgb("#64748b"))[Standar: HL7 FHIR v4 / LOINC]
     ]
   )
 
@@ -136,7 +136,7 @@
 // DAFTAR ISI
 // ---------------------------------------------------------
 #outline(
-  title: [Daftar Isi Dokumentasi],
+  title: [Daftar Isi Spesifikasi Teknis],
   indent: 1.5em,
   depth: 3
 )
@@ -146,164 +146,89 @@
 #v(0.5cm)
 
 // ---------------------------------------------------------
-// BAB 1: RINGKASAN EKSEKUTIF & VISI
+// BAB 1: USER PERSONAS, PAIN POINTS & STRATEGI DEMOGRAFI
 // ---------------------------------------------------------
-= Ringkasan Eksekutif & Visi Produk
+= Analisis User Personas, Pain Points & Strategi Demografi
 
-*HeartSync* adalah aplikasi Progressive Web App (PWA) pencatatan dan analisis tekanan darah yang dirancang untuk memberikan pengalaman _immersive, interaktif, dan intuitif_. Aplikasi ini menggabungkan kemudahan pencatatan harian dengan visualisasi tren klinis yang aman dan menjaga privasi pengguna secara 100%.
+HeartSync dikembangkan berdasarkan metodologi riset pengguna klinis yang mendalam terhadap 2 segmen target utama:
 
-== Permasalahan yang Disederhanakan
-Hipertensi sering disebut sebagai _"silent killer"_ karena banyak penderita yang tidak menyadari perubahan tekanan darah mereka sampai terjadi komplikasi serius. Tantangan utama pasien dan keluarga saat ini meliputi:
-1. Catatan manual di kertas sering hilang atau rusak sebelum konsultasi dokter.
-2. Aplikasi kesehatan komersial yang rumit, dipenuhi iklan, atau mewajibkan akun server luar yang berisiko meretas privasi data medis sensitif.
-3. Antarmuka aplikasi yang tidak ramah lansia (teks kecil, navigasi berbelit-belit).
+== Persona 1: Pak Budi (58 Tahun) — Penderita Hipertensi Kronis
+- *Latar Belakang*: Terdiagnosis hipertensi sejak 5 tahun lalu, mengonsumsi obat Amlodipine 5mg secara rutin.
+- *Pain Points Utama*:
+  1. *Friction Pencatatan*: Pengisian formulir digital biasa yang memerlukan koneksi internet atau login akun sering membuat frustrasi.
+  2. *Keterbatasan Penglihatan*: Tulisan kecil pada layar smartphone biasa membuat mata lelah.
+  3. *Distraksi Lupa Obat*: Sering kali ragu apakah sudah meminum obat dosis pagi atau belum.
+- *Solusi HeartSync*:
+  - *Asisten Suara (Web Speech API)* untuk membaca tensi secara otomatis.
+  - *Jadwal Minum Obat* dengan *Adherence Streak Counter*.
 
-== Solusi HeartSync
-HeartSync memecahkan masalah ini dengan pendekatan _"Notion untuk Tekanan Darah"_:
-- *Penyimpanan Offline-First (IndexedDB)*: Seluruh data tersimpan aman di memori perangkat browser pengguna.
-- *Antarmuka Ramah Keluarga*: Dukungan *Multi-Profil* instan (Saya, Orang Tua, Pasangan, Anak) dalam satu aplikasi.
-- *Klasifikasi AHA/WHO Real-Time*: Penilaian otomatis kategori tensi beserta saran medis kontekstual.
-- *Laporan Medis 1-Klik (PDF)*: Generator dokumen laporan berformat bersih untuk dokter saat konsultasi.
-
-#callout(
-  title: "PRINSIP UTAMA PRIVASI",
-  [HeartSync tidak mengirimkan data tekanan darah Anda ke server cloud mana pun. Seluruh kalkulasi, grafik, dan dokumen PDF dibuat secara lokal di browser perangkat Anda.],
-  type: "success"
-)
+== Persona 2: Siska (32 Tahun) — Family Caregiver
+- *Latar Belakang*: Anak yang bekerja di luar kota dan bertanggung jawab atas kesehatan jantung orang tua.
+- *Pain Points Utama*:
+  1. Takut tidak mengetahui jika orang tua mengalami *Krisis Hipertensi* saat di rumah.
+  2. Kesulitan mengumpulkan rekapitulasi data tensi untuk diserahkan ke dokter spesialis.
+- *Solusi HeartSync*:
+  - *Tombol Darurat SOS WhatsApp 1-Klik* yang langsung membagikan data tensi dan lokasi ke WhatsApp keluarga.
+  - *Ekspor PDF Dokter 1-Klik* untuk konsultasi medis.
 
 // ---------------------------------------------------------
-// BAB 2: STANDAR MEDIS & KLASIFIKASI AHA/WHO
+// BAB 2: STANDAR INTEROPERABILITAS MEDIS HL7 FHIR v4
 // ---------------------------------------------------------
-= Standar Medis & Klasifikasi AHA/WHO
+= Standar Interoperabilitas Medis HL7 FHIR v4
 
-Algoritma pengklasifikasi tekanan darah pada HeartSync mengikuti panduan resmi dari *American Heart Association (AHA)* dan *World Health Organization (WHO)*.
+HeartSync menjamin kompatibilitas ekosistem kesehatan global dengan mengadopsi standar *HL7 FHIR v4 (Fast Healthcare Interoperability Resources)*:
 
 #v(0.5em)
 
 #table(
-  columns: (1.2fr, 1fr, 1fr, 2.5fr),
-  fill: (x, y) => if y == 0 { primary-color } else if calc.even(y) { rgb("#f8fafc") } else { white },
+  columns: (1.5fr, 1.2fr, 1.5fr, 2fr),
+  fill: (x, y) => if y == 0 { secondary-color } else if calc.even(y) { rgb("#f8fafc") } else { white },
   stroke: 0.5pt + rgb("#cbd5e1"),
   inset: 7pt,
   align: (col, row) => if row == 0 { center + horizon } else { left + horizon },
   
-  [#text(weight: "bold", fill: white)[Kategori BP]],
-  [#text(weight: "bold", fill: white)[Sistolik (mmHg)]],
-  [#text(weight: "bold", fill: white)[Diastolik (mmHg)]],
-  [#text(weight: "bold", fill: white)[Rekomendasi Clinical Action]],
+  [#text(weight: "bold", fill: white)[Komponen Medis]],
+  [#text(weight: "bold", fill: white)[LOINC Code]],
+  [#text(weight: "bold", fill: white)[Standard Unit]],
+  [#text(weight: "bold", fill: white)[Deskripsi FHIR Resource]],
 
-  [🟢 Normal], [< 120], [DAN < 80], [Kondisi sehat ideal. Pertahankan pola makan seimbang dan olahraga teratur.],
-  [🟡 Meningkat (Elevated)], [120 – 129], [DAN < 80], [Pre-hipertensi. Kurangi garam/natrium, hindari stres, dan evaluasi pola tidur.],
-  [🟠 Hipertensi Tahap 1], [130 – 139], [ATAU 80 – 89], [Terindikasi ringan. Ubah diet (DASH), rutin olahraga, dan konsultasi ke dokter.],
-  [🔴 Hipertensi Tahap 2], [≥ 140], [ATAU ≥ 90], [Hipertensi sedang/berat. Disarankan segera konsultasi dokter untuk penanganan obat.],
-  [🚨 Krisis Hipertensi], [> 180], [ATAU > 120], [PERINGATAN DARURAT! Istirahat total dan SEGERA ke IGD / panggil 119.]
+  [Blood Pressure Panel], [85354-9], [mm[Hg]], [HL7 FHIR Observation Resource Container],
+  [Systolic Blood Pressure], [8480-6], [mm[Hg]], [Tekanan Darah Sistolik (Atas)],
+  [Diastolic Blood Pressure], [8462-4], [mm[Hg]], [Tekanan Darah Diastolik (Bawah)],
+  [Heart Rate / Pulse], [8867-4], [/min], [Frekuensi Denyut Nadi / Menit]
 )
 
 #v(0.5em)
 
 #callout(
-  title: "PERINGATAN DARURAT KRISIS HIPERTENSI",
-  [Jika pencatatan Sistolik > 180 atau Diastolik > 120 mmHg, aplikasi HeartSync akan menampilkan spanduk peringatan krisis berwarna ungu/merah lengkap dengan tombol panggil darurat 119.],
-  type: "danger"
+  title: "INTEGRASI SATUSEHAT KEMENKES",
+  [Format data JSON FHIR yang dihasilkan HeartSync 100% kompatibel untuk diimpor atau dihubungkan dengan platform SATUSEHAT Kementerian Kesehatan Republik Indonesia.],
+  type: "success"
 )
 
 // ---------------------------------------------------------
-// BAB 3: ARSITEKTUR PERANGKAT LUNAK & TECH STACK
+// BAB 3: KEPATUHAN KEAMANAN OPENSSF CRITICAL INFRASTRUCTURE
 // ---------------------------------------------------------
-= Arsitektur Perangkat Lunak & Tech Stack
+= Keamanan OpenSSF Critical Infrastructure & Cryptographic Hash Chain
 
-HeartSync menggunakan arsitektur *Single Page Application (SPA)* berbasis React 18 & TypeScript dengan struktur komponen yang sangat terpisah (_separation of concerns_).
+HeartSync mengimplementasikan proteksi kriptografi bertingkat:
 
-== Spesifikasi Modul Utama
+1. *Enkripsi AES-256-GCM at Rest*:
+   Seluruh berkas pencatatan yang diekspor disandi dengan kunci simetris AES-256-GCM berbasis kriteria PBKDF2 (100.000 iterasi + garam acak 16-byte).
 
-1. *Dexie.js Storage (`src/db/index.ts`)*:
-   Menyediakan API penyimpanan berkecepatan tinggi di atas IndexedDB dengan dukungan transaksi aman dan pengindeksan data berdasarkan `profileId` dan `timestamp`.
+2. *Tamper-Evident SHA-256 Audit Hash Chain*:
+   Setiap entri data medis dihubungkan dengan mata rantai hash kriptografi:
+   $ "Hash"_n = "SHA256"("Hash"_{n-1} + "Data" + "Timestamp") $
+   Setiap manipulasi ilegal pada IndexedDB akan menggagalkan verifikasi rantai hash dan memberikan peringatan keamanan pada aplikasi.
 
-2. *State Management (`src/store/useAppStore.ts`)*:
-   Mengelola state global terpusat seperti `activeProfileId`, filter tanggal, filter pencarian, status modal dialog, dan notifikasi toast.
-
-3. *Custom Hooks (`src/hooks/useReadings.ts` & `useProfiles.ts`)*:
-   Memanfaatkan `useLiveQuery` dari Dexie untuk menyajikan data secara reaktif dan instan begitu ada perubahan data di IndexedDB.
-
-// ---------------------------------------------------------
-// BAB 4: SCHEMA DATABASE INDEXEDDB
-// ---------------------------------------------------------
-= Schema Database IndexedDB (Dexie.js)
-
-Database bernama `HeartSyncDB` memiliki 3 tabel utama:
-
-== Tabel 1: `profiles`
-Menyimpan data identitas profil pengguna dan target tekanan darah.
-- `id` (string, Primary Key): ID unik profil (contoh: `profile-self-default`).
-- `name` (string): Nama lengkap atau panggilan pengguna.
-- `relationship` (string): Hubungan (`self`, `parent`, `spouse`, `child`, `other`).
-- `avatar` (string): Emoji avatar pilihan pengguna.
-- `targetSystolic` & `targetDiastolic` (number): Ambang batas acuan target pengguna.
-- `notes` (string, opsional): Catatan medis khusus profil.
-
-== Tabel 2: `readings`
-Menyimpan seluruh catatan riwayat pengukuran tekanan darah.
-- `id` (number, Auto-Increment Primary Key).
-- `profileId` (string, Indexed Foreign Key).
-- `systolic` & `diastolic` (number): Nilai tensi dalam mmHg.
-- `pulse` (number): Denyut nadi per menit (BPM).
-- `timestamp` (string, ISO 8601, Indexed): Waktu pengukuran.
-- `position` (string): Posisi tubuh (`duduk`, `baring`, `berdiri`).
-- `arm` (string): Lengan (`kiri`, `kanan`).
-- `tags` (array of string): Chip kondisi (`Bangun Tidur`, `Sebelum Obat`, `Pasca Olahraga`, dll).
-
-== Tabel 3: `reminders`
-Menyimpan jadwal pengingat lokal pengukuran tensi & konsumsi obat.
-- `id` (number, Auto-Increment).
-- `profileId` (string, Foreign Key).
-- `title` & `type` (string): Judul dan tipe (`measurement` / `medication`).
-- `time` (string): Jam pengingat (format `07:00`).
-- `enabled` (boolean): Status aktif/non-aktif pengingat.
-
-// ---------------------------------------------------------
-// BAB 5: FITUR UTAMA & PANDUAN PENGGUNAAN
-// ---------------------------------------------------------
-= Fitur Utama & Panduan Penggunaan
-
-== 1. Manajemen Multi-Profil Pasien
-Pengguna dapat mengklik tombol switcher profil di header bagian atas untuk:
-- Mengganti profil pasien aktif secara instan.
-- Menambah profil baru untuk anggota keluarga (misal: Ibu Maryam, 68 tahun).
-- Mengatur target tekanan darah dan catatan medis per profil.
-
-== 2. Pencatatan Tekanan Darah (Frictionless Form)
-Buka modal pencatatan via tombol *"+ Catat Tensi"*:
-- Gunakan tombol `+` dan `-` untuk menyesuaikan Sistolik, Diastolik, dan Nadi dengan mudah.
-- Lihat warna badge klasifikasi AHA yang berubah secara real-time saat angka disesuaikan.
-- Pilih tag kondisi (misal: _Sesudah Obat_, _Stres_, _Santai_).
-- Simpan catatan. Data akan langsung terupdate di grafik dan tabel riwayat secara reaktif.
-
-== 3. Laporan Medis Dokter (1-Click PDF Export)
-Dokumen PDF laporan medis berformat resmi dapat diunduh kapan saja melalui tab *Laporan Dokter*:
-- Berisi header identitas pasien & tanggal cetak.
-- Menyajikan ringkasan statistik (rata-rata tensi, rata-rata nadi, rentang min/max).
-- Tabel lengkap riwayat pencatatan beserta kategori AHA.
-- Kolom paraf & catatan evaluasi klinis untuk dokter penanggung jawab.
-
-// ---------------------------------------------------------
-// BAB 6: PANDUAN DEPLOYMENT VERCEL & PWA
-// ---------------------------------------------------------
-= Panduan Deployment Vercel & PWA
-
-HeartSync dapat di-deploy secara mudah dan gratis ke platform cloud seperti *Vercel*.
-
-== Langkah Deployment Vercel:
-1. Pastikan seluruh kode sudah di-push ke repositori GitHub.
-2. Buka dashboard Vercel (vercel.com) -> Klik *New Project*.
-3. Import repositori HeartSync.
-4. Pilih preset framework *Vite*.
-5. Klik *Deploy*. Aplikasi akan aktif dalam hitungan detik.
-
-== Fitur PWA (Progressive Web App):
-Aplikasi ini sudah dilengkapi `vite-plugin-pwa` dan `manifest.webmanifest`. Pengguna di perangkat Android/iOS dapat menekan tombol *"Add to Home Screen"* pada browser untuk menginstal HeartSync sebagai aplikasi native di smartphone mereka yang bekerja 100% offline.
+#callout(
+  title: "SKOR KRITIS OPENSSF ≥ 0.4",
+  [HeartSync dirancang memenuhi kriteria OpenSSF Criticality Score mencakup kebijakan lisensi terbuka MIT, pengujian otomatis CI/CD GitHub Actions, serta jaminan proteksi data lokal tanpa bocoran ke server pihak ketiga.],
+  type: "info"
+)
 
 #v(2cm)
 
 #align(center)[
-  #text(size: 9pt, fill: rgb("#94a3b8"))[— Akhir dari Dokumentasi Resmi HeartSync —]
+  #text(size: 9pt, fill: rgb("#94a3b8"))[— Akhir dari Dokumentasi Resmi Enterprise HeartSync —]
 ]

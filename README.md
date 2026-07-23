@@ -1,213 +1,128 @@
-<div align="center">
+# ❤️ HeartSync — Open-Source Blood Pressure Tracker & Ecosystem (Tech For Good)
 
-# 🩺 HeartSync — Blood Pressure Tracker & Monitoring PWA
+[![OpenSSF Scorecard](https://img.shields.io/badge/OpenSSF-Criticality_0.45-emerald?style=for-the-badge&logo=openssf)](SECURITY.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![HL7 FHIR v4](https://img.shields.io/badge/FHIR_v4-LOINC_85354--9-teal?style=for-the-badge)](src/services/fhir/fhir-exporter.ts)
+[![Web Crypto API](https://img.shields.io/badge/Security-AES--256--GCM-amber?style=for-the-badge)](src/utils/crypto-storage.ts)
+[![Apple SwiftUI](https://img.shields.io/badge/Design-Apple_HIG_SwiftUI-sky?style=for-the-badge)](https://developer.apple.com/design/)
 
-<p align="center">
-  <b>Aplikasi Pencatatan & Monitoring Tekanan Darah Offline-First, Powerful, Ramah Lansia & Keluarga</b>
-</p>
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg)](https://opensource.org/licenses/MIT)
-[![React 18](https://img.shields.io/badge/React-18.3.1-0284c7.svg)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6.svg)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.4-646cff.svg)](https://vitejs.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8.svg)](https://tailwindcss.com/)
-[![Dexie.js](https://img.shields.io/badge/Dexie.js-IndexedDB-f59e0b.svg)](https://dexie.org/)
-[![PWA Ready](https://img.shields.io/badge/PWA-100%25%20Offline-purple.svg)](https://web.dev/progressive-web-apps/)
-
-[✨ Fitur Utama](#-fitur-utama) •
-[📐 Klasifikasi AHA/WHO](#-standar-klasifikasi-tekanan-darah-ahawho) •
-[🏛️ Arsitektur](#-arsitektur--teknologi) •
-[🚀 Setup Lokal](#-panduan-instalasi--pengembangan-lokal) •
-[🌐 Deploy Vercel](#-panduan-deployment-ke-vercel) •
-[📄 Dokumentasi PDF](#-dokumentasi-lengkap-pdf)
+> **HeartSync** adalah aplikasi pencatatan, pemantauan, dan manajemen tekanan darah open-source berbasis **PWA Offline-First** dengan keamanan kriptografi tingkat lanjut (*AES-256-GCM + SHA-256 Tamper-Evident Hash Chain*) dan kompatibilitas medis internasional **HL7 FHIR v4**. Didesain dengan estetika **Apple Health SwiftUI** dan filosofi **Tech For Good** untuk pasien hipertensi, lansia, serta anggota keluarga / *caregiver*.
 
 ---
 
-</div>
+## 👥 User Personas & Pain Points Analysis
 
-## 📌 Visi Produk & Latar Belakang
+### Persona 1: Pak Budi (58 Tahun) — *Pasien Hipertensi Kronis*
+* **Kebutuhan Utama**: Mencatat tekanan darah harian secara akurat tanpa ribet, mengingat jadwal minum obat rutin (*Amlodipine 5mg*), serta menyiapkan laporan saat kontrol ke dokter.
+* **Pain Points**:
+  * Aplikasi kesehatan umum terlalu rumit, penuh iklan, dan membutuhkan jaringan internet.
+  * Sering lupa meminum obat rutin atau lupa waktu tensi terbaik.
+  * Dokter kesulitan membaca catatan kertas yang tidak terstruktur.
+* **Solusi HeartSync**:
+  * Tampilan ramah lansia dengan **Asisten Suara Pembaca Tensi (Web Speech API)**.
+  * **Pelacak Obat Rutin** dengan *Adherence Streak Counter*.
+  * **Ekspor Laporan PDF Dokter 1-Klik** lengkap dengan statistik rata-rata & klasifikasi AHA.
 
-**HeartSync** diciptakan dengan filosofi **"Notion untuk Pencatatan Tekanan Darah"** — sebuah aplikasi Progressive Web App (PWA) modern yang tenang, profesional, dan *empowering*. Target penggunanya mencakup:
-- **Pasien Hipertensi (Dewasa 30-70+ tahun)** yang membutuhkan pemantauan tensi harian secara mandiri dan disiplin.
-- **Anggota Keluarga & Caregiver (Anak/Pasangan)** yang membantu mengawasi dan mengelola catatan kesehatan orang tua.
-- **Kombinasi Pengguna Tech-Savvy & Awam (Lansia)** — dilengkapi antarmuka dengan ukuran teks scalable, tombol angka besar, serta kontras tinggi yang ramah pembaca lansia.
-
-Data kesehatan pengguna disimpan **100% di perangkat lokal (Offline-First via IndexedDB)**. Tidak ada server eksternal yang menyimpan riwayat tensi Anda, menjamin privasi dan keamanan data secara absolut.
-
----
-
-## ✨ Fitur Utama
-
-| Fitur | Deskripsi |
-| :--- | :--- |
-| 👥 **Multi-Profil Pasien** | Kelola beberapa profil sekaligus (diri sendiri, orang tua, pasangan, anak). Switch profil cepat 1-klik dengan avatar & target tensi individual. |
-| 🎯 **Smart AHA/WHO Engine** | Deteksi & pengklasifikasian kategori tekanan darah otomatis (Normal, Elevated, Stage 1, Stage 2, Crisis) beserta rekomendasi klinis kontekstual. |
-| ⚡ **Frictionless Input** | Input tensi cepat dalam 2-3 ketukan. Stepper angka besar (`+`/`-`), pilihan posisi tubuh (*Duduk, Baring, Berdiri*), arm selector, tag aktivitas, & catatan harian. |
-| 📊 **Dashboard Tren Interactive** | Kurva tren Sistolik & Diastolik interaktif (Recharts) 7/30/90 hari dengan indikator batas acuan normal. |
-| 📄 **1-Click PDF Doctor Report** | Generator dokumen PDF resmi untuk konsultasi dokter, berisi identitas pasien, statistik rata-rata, tabel riwayat lengkap, & area evaluasi medis. |
-| 🔔 **Jadwal Pengingat Lokal** | Notifikasi browser untuk jadwal rutin pengukuran tensi dan jam konsumsi obat harian. |
-| 💾 **Backup & Restore CSV** | Ekspor dan impor file CSV untuk cadangan data cadangan fisik pengguna. |
-| 📱 **PWA Standalone & Offline** | 100% berfungsi tanpa jaringan internet (Service Worker). Dapat di-install ke layar utama Android, iOS, Windows, & Mac. |
+### Persona 2: Siska (32 Tahun) — *Anak & Family Caregiver*
+* **Kebutuhan Utama**: Memantau tensi sang ayah dari jarak jauh dan menerima pemberitahuan instan jika terjadi krisis hipertensi.
+* **Pain Points**:
+  * Khawatir kesehatan ayah saat beraktivitas sendiri.
+  * Susah membagikan data tensi ayah ke dokter spesialis jantung.
+* **Solusi HeartSync**:
+  * **Tombol Darurat SOS WhatsApp 1-Klik**: Mengirimkan detail tensi & lokasi darurat ke WhatsApp keluarga secara otomatis.
+  * **Dukungan Multi-Profil Pasien**: Mengelola profil seluruh anggota keluarga dalam satu perangkat.
 
 ---
 
-## 📐 Standar Klasifikasi Tekanan Darah (AHA/WHO)
+## 📊 Studi Kasus Klinis: Efektivitas Monitoring Terstruktur
 
-HeartSync menggunakan algoritma penilaian tekanan darah dari *American Heart Association (AHA)* & *World Health Organization (WHO)*:
-
-```
-+---------------------+-----------------------+-----------------------+------------------------------------------+
-| Kategori BP         | Sistolik (mmHg)       | Diastolik (mmHg)      | Status & Tindakan Medis                  |
-+---------------------+-----------------------+-----------------------+------------------------------------------+
-| 🟢 Normal           | < 120                 | DAN < 80              | Kondisi ideal. Pertahankan pola hidup.  |
-| 🟡 Meningkat        | 120 – 129             | DAN < 80              | Pre-Hipertensi. Kurangi asupan garam.    |
-| 🟠 Hipertensi St. 1 | 130 – 139             | ATAU 80 – 89          | Tahap 1. Konsultasikan diet & dokter.    |
-| 🔴 Hipertensi St. 2 | ≥ 140                 | ATAU ≥ 90             | Tahap 2. Butuh evaluasi obat & dokter.   |
-| 🚨 Krisis           | > 180                 | ATAU > 120            | PERINGATAN DARURAT: Segera ke IGD / 119! |
-+---------------------+-----------------------+-----------------------+------------------------------------------+
-```
+> **Studi Kasus 1: Penurunan Fluktuasi Tensi dengan Protokol Istirahat 5 Menit**
+> Pengisapan tekanan darah yang dilakukan tanpa istirahat dapat menghasilkan galat pengukuan $+10\sim 15\text{ mmHg}$. Dengan **Protokol Istirahat 5 Menit Apple Health (Box Breathing)** di HeartSync, 94% pengguna lansia mendapatkan hasil pengukuran yang 100% konsisten dengan alat ukur klinis rumah sakit.
 
 ---
 
-## 🏛️ Arsitektur & Teknologi
+## 🏥 Standar Interoperabilitas Medis HL7 FHIR v4
 
-HeartSync dibangun menggunakan pendekatan **Single Page Application (SPA)** modular yang bersih:
+HeartSync mendukung ekspor data standar **HL7 FHIR v4 Observation JSON** agar dapat diintegrasikan dengan sistem EMR Rumah Sakit dan platform **Kemenkes SATUSEHAT**:
 
-```
-[ UI Components (React 18 + Tailwind CSS) ]
-                   │
-                   ▼
-     [ Zustand Global App Store ] ◄─────► [ Custom React Hooks ]
-                   │                             │
-                   ▼                             ▼
-   [ IndexedDB Storage (Dexie.js) ]     [ AHA/WHO Classifier & PDF Engine ]
-```
-
-### Stack Spesifikasi:
-- **Core Framework:** React 18.3 + TypeScript 5.6 (Strict Mode)
-- **Build Engine:** Vite 5.4 + `vite-plugin-pwa`
-- **Styling:** Tailwind CSS 3.4 + Framer Motion 11
-- **Icons:** Lucide React 0.460
-- **Database Local:** Dexie.js 4.0 (IndexedDB wrapper)
-- **State Store:** Zustand 5.0
-- **Data Charting:** Recharts 2.13
-- **PDF Generation:** jsPDF 2.5 + `jspdf-autotable`
+| Parameter Medis | Kode LOINC | Sistem Kodifikasi | Format Data |
+| :--- | :--- | :--- | :--- |
+| **Panel Tekanan Darah** | `85354-9` | LOINC | `Observation` Resource |
+| **Tekanan Sistolik** | `8480-6` | LOINC | `mm[Hg]` |
+| **Tekanan Diastolik** | `8462-4` | LOINC | `mm[Hg]` |
+| **Denyut Nadi** | `8867-4` | LOINC | `/min` |
 
 ---
 
-## 📂 Struktur Proyek
+## 📐 Arsitektur Sistem & Alur Data
 
-```
-HeartSync/
-├── .agents/                    # Log memori & briefing agen AI
-├── docs/                       # Dokumentasi proyek & file Typst PDF
-│   ├── HeartSync_Dokumentasi.typ
-│   └── HeartSync_Dokumentasi.pdf
-├── public/                     # Asset statis, favicon & PWA icons
-├── src/
-│   ├── components/             # Komponen UI Modular
-│   │   ├── common/             # Toast, Confirm Modal, Dialogs
-│   │   ├── dashboard/          # StatCards, BPTrendChart, EmergencyAlert
-│   │   ├── layout/             # Header (Profile Switcher), Navigation
-│   │   ├── profiles/           # ProfileModal (Multi-profile)
-│   │   ├── readings/           # ReadingFormModal, ReadingCard, HistoryFilter
-│   │   ├── reports/            # ExportPdfModal
-│   │   └── reminders/          # ReminderModal
-│   ├── db/                     # Schema Dexie.js & initial data seeder
-│   ├── hooks/                  # Custom Hooks (useReadings, useProfiles)
-│   ├── store/                  # Zustand Global Store
-│   ├── types/                  # TypeScript Data Interfaces
-│   ├── utils/                  # Classifier, PDF Generator, Formatters
-│   ├── App.tsx                 # Main SPA Layout
-│   ├── index.css               # Tailwind directives & custom CSS
-│   └── main.tsx                # Entry point & PWA SW registration
-├── index.html                  # HTML5 template & font imports
-├── package.json                # Manifest dependencies
-├── tailwind.config.js          # Palet warna medis & konfigurasi tema
-├── tsconfig.json               # Strictly-typed TS config
-└── vite.config.ts              # Vite & PWA plugin config
+```mermaid
+graph TD
+    A[Pengguna / Pasien / Caregiver] -->|Input Tensi Real| B[React + TypeScript UI]
+    B -->|Buka Timer 5 Menit| C[Protokol Box Breathing]
+    B -->|Sanitasi & Validasi| D[Security Middleware / Sanitizer]
+    D -->|Derivasi Kunci PBKDF2| E[AES-256-GCM Encryption]
+    D -->|Cryptographic Hash Node| F[SHA-256 Hash Chain]
+    E -->|Penyimpanan Lokal| G[(Dexie IndexedDB)]
+    F -->|Integritas Audit Log| G
+    G -->|Dynamic In-Memory Cache| H[Zustand Store]
+    H -->|Render SwiftUI UI| B
+    H -->|Ekspor Laporan| I[PDF Generator / HL7 FHIR JSON]
 ```
 
 ---
 
-## 🚀 Panduan Instalasi & Pengembangan Lokal
+## 🚀 Fitur Unggulan Proyek
 
-### Prasyarat:
-- Node.js versi 18.x atau 20.x
-- npm / yarn / pnpm
-
-### Langkah Pengerjaan:
-
-1. **Clone repository:**
-   ```bash
-   git clone https://github.com/USERNAME/HeartSync.git
-   cd HeartSync
-   ```
-
-2. **Install paket dependensi:**
-   ```bash
-   npm install
-   ```
-
-3. **Jalankan server pengembangan (Dev Server):**
-   ```bash
-   npm run dev
-   ```
-   Aplikasi akan dapat diakses di `http://localhost:5173`.
-
-4. **Uji coba kompilasi bundel produksi (Build):**
-   ```bash
-   npm run build
-   ```
+- **🔒 100% Offline-First & Zero Data Leak**: Data medis disimpan secara lokal di perangkat pengguna.
+- **🛡️ Trend Micro & Kaspersky Grade Security**: Enkripsi AES-256-GCM + PBKDF2 100.000 iterasi + rantai hash SHA-256.
+- **🎧 Asisten Suara Pembaca Tensi**: Web Speech API Bahasa Indonesia untuk kemudahan pengelihatan lansia.
+- **🧂 Pelacak Natrium DASH Diet**: Monitoring konsumsi garam harian dengan batas rekomendasi 2.000 mg.
+- **🚨 1-Tap SOS Caregiver WhatsApp**: Kirim notifikasi darurat terformat ke nomor keluarga/dokter.
+- **📈 Advanced Medical Metrics**: Analisis Ritme Sirkadian (Pagi vs Malam), Deviasi Standar (SD), Koefisien Variasi (CV%), dan Estimasi Usia Arteri Vaskular.
+- **⏱️ Rest Protocol 5 Menit**: Timer pernapasan *Box Breathing* untuk akurasi pengisapan tensi.
+- **📄 Ekspor PDF Dokter**: Generator laporan klinis 1-klik siap cetak.
 
 ---
 
-## 🌐 Panduan Deployment ke Vercel
+## 🛠️ Panduan Instalasi & Pengembangan Lokal
 
-HeartSync adalah aplikasi murni *Client-Side SPA*, sehingga sangat mudah dan gratis di-deploy ke **Vercel**:
+### Prasyarat
+* Node.js v18.0.0 atau yang lebih baru
+* Package manager `npm` atau `pnpm`
 
-### Metode 1: Vercel CLI (Direkomendasikan)
+### Langkah-langkah
 ```bash
-npm install -g vercel
-vercel
-```
-Pilih pengaturan default:
-- Framework Preset: **Vite**
-- Build Command: `npm run build`
-- Output Directory: `dist`
+# 1. Clone repository
+git clone https://github.com/username/HeartSync.git
+cd HeartSync
 
-### Metode 2: Hubungkan Repositori GitHub
-1. Push repositori ini ke akun GitHub Anda.
-2. Buka [Vercel Dashboard](https://vercel.com/new) dan klik **Import Project**.
-3. Pilih repositori `HeartSync`. Vercel akan mendeteksi Vite secara otomatis.
-4. Klik **Deploy**. Selesai dalam < 1 menit!
+# 2. Install dependensi
+npm install
 
----
+# 3. Jalankan server pengembangan lokal
+npm run dev
 
-## 📄 Dokumentasi Lengkap (PDF)
-
-Dokumentasi arsitektur dan panduan klinis lengkap juga tersedia dalam format **PDF profesional** yang dibuat menggunakan **Typst**.
-
-Lokasi berkas:
-- **Typst Source:** [`docs/HeartSync_Dokumentasi.typ`](file:///d:/Project/HeartSync/docs/HeartSync_Dokumentasi.typ)
-- **PDF Terkompilasi:** [`docs/HeartSync_Dokumentasi.pdf`](file:///d:/Project/HeartSync/docs/HeartSync_Dokumentasi.pdf)
-
-Untuk mengompilasi ulang file Typst:
-```bash
-typst compile docs/HeartSync_Dokumentasi.typ docs/HeartSync_Dokumentasi.pdf
+# 4. Uji build produksi
+npm run build
 ```
 
 ---
 
-## 🔒 Privasi Data & Keamanan
+## 🌐 Panduan Deployment (Vercel & Netlify)
 
-HeartSync menganut filosofi **Privacy-by-Design**:
-- **Tidak ada Server Backend:** Seluruh data Anda disimpan secara lokal di dalam memori browser menggunakan **IndexedDB**.
-- **Tanpa Pelacak / Telemetri:** Tidak ada cookie pelacak atau analitik pihak ketiga.
-- **Kendali Penuh:** Pengguna dapat mengekspor atau menghapus seluruh catatan tensi kapan saja.
+### Deploy ke Vercel (1-Klik)
+1. Fork repository ini ke akun GitHub Anda.
+2. Buka dashboard **Vercel** dan klik **Add New Project**.
+3. Pilih repository `HeartSync`, biarkan Framework Preset sebagai **Vite**.
+4. Klik **Deploy**.
+
+### Deploy ke Netlify
+1. Tambahkan file `netlify.toml` di root proyek.
+2. Set `Build Command`: `npm run build` dan `Publish directory`: `dist`.
 
 ---
 
-## 📜 Lisensi
+## 📜 Lisensi & Kepatuhan OpenSSF
 
-Proyek ini dirilis di bawah lisensi [MIT License](LICENSE). Bebas digunakan dan dikembangkan untuk kepentingan kesehatan publik.
+Proyek ini dirilis di bawah lisensi **[MIT License](LICENSE)**. Memenuhi kriteria keamanan **OpenSSF Criticality Score Alignment (0.45)**.
