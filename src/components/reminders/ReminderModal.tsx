@@ -4,6 +4,7 @@ import { useProfiles } from '../../hooks/useProfiles';
 import { db } from '../../db';
 import { Reminder } from '../../types/blood-pressure';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { playClickSound, playSuccessChime } from '../../utils/audio-fx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Bell, Plus, Clock, Pill, Activity, Trash2, Check } from 'lucide-react';
 
@@ -33,6 +34,7 @@ export const ReminderModal: React.FC = () => {
   const [selectedDays, setSelectedDays] = useState<number[]>([0, 1, 2, 3, 4, 5, 6]);
 
   const toggleDay = (dayIndex: number) => {
+    playClickSound();
     if (selectedDays.includes(dayIndex)) {
       setSelectedDays(selectedDays.filter((d) => d !== dayIndex));
     } else {
@@ -41,6 +43,7 @@ export const ReminderModal: React.FC = () => {
   };
 
   const handleToggleReminder = async (rem: Reminder) => {
+    playClickSound();
     if (!rem.id) return;
     await db.reminders.update(rem.id, { enabled: !rem.enabled });
     addToast({
@@ -51,6 +54,7 @@ export const ReminderModal: React.FC = () => {
   };
 
   const handleDeleteReminder = async (id?: number) => {
+    playClickSound();
     if (!id) return;
     await db.reminders.delete(id);
     addToast({ type: 'success', title: 'Pengingat Dihapus', message: 'Jadwal pengingat telah dihapus.' });
@@ -72,6 +76,7 @@ export const ReminderModal: React.FC = () => {
         notes
       });
 
+      playSuccessChime();
       addToast({
         type: 'success',
         title: 'Pengingat Berhasil Disimpan',
@@ -89,6 +94,7 @@ export const ReminderModal: React.FC = () => {
   };
 
   const requestNotificationPermission = async () => {
+    playClickSound();
     if (!('Notification' in window)) {
       addToast({ type: 'warning', title: 'Tidak Didukung', message: 'Browser ini tidak mendukung notifikasi.' });
       return;
@@ -96,6 +102,7 @@ export const ReminderModal: React.FC = () => {
 
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
+      playSuccessChime();
       new Notification('HeartSync Pengingat Aktif', {
         body: 'Notifikasi pengingat tensi & obat berhasil diaktifkan di perangkat Anda!',
         icon: '/favicon.svg'
@@ -120,7 +127,7 @@ export const ReminderModal: React.FC = () => {
           {/* Header */}
           <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
+              <div className="p-2 rounded-xl bg-amber-105 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
                 <Bell className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
@@ -128,7 +135,10 @@ export const ReminderModal: React.FC = () => {
               </h3>
             </div>
             <button
-              onClick={closeModal}
+              onClick={() => {
+                playClickSound();
+                closeModal();
+              }}
               className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <X className="w-5 h-5" />
@@ -149,7 +159,7 @@ export const ReminderModal: React.FC = () => {
               </div>
               <button
                 onClick={requestNotificationPermission}
-                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shrink-0 shadow-md transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shrink-0 shadow-md transition-all active:scale-95"
               >
                 Uji Notifikasi
               </button>
@@ -162,8 +172,11 @@ export const ReminderModal: React.FC = () => {
                     Jadwal Terpasang ({reminders.length})
                   </span>
                   <button
-                    onClick={() => setIsAddingNew(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition-colors"
+                    onClick={() => {
+                      playClickSound();
+                      setIsAddingNew(true);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition-all active:scale-95"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Tambah Jadwal
@@ -189,12 +202,12 @@ export const ReminderModal: React.FC = () => {
                             <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
                               {r.title}
                             </h4>
-                            <span className="text-xs font-extrabold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md">
+                            <span className="text-xs font-extrabold text-amber-605 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md">
                               {r.time}
                             </span>
                           </div>
                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            {r.type === 'medication' ? `Obat: ${r.dosage || '-'}` : 'Pemeriksaan Tensi Routine'}
+                            {r.type === 'medication' ? `Obat: ${r.dosage || '-'}` : 'Pemeriksaan Tensi Rutin'}
                           </p>
                         </div>
                       </div>
@@ -208,7 +221,7 @@ export const ReminderModal: React.FC = () => {
                         </button>
                         <button
                           onClick={() => handleDeleteReminder(r.id)}
-                          className="p-1.5 text-slate-400 hover:text-rose-500 transition-colors"
+                          className="p-1.5 text-slate-400 hover:text-rose-500 transition-all active:scale-90"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -219,14 +232,17 @@ export const ReminderModal: React.FC = () => {
               </div>
             ) : (
               /* Add New Reminder Form */
-              <form onSubmit={handleCreateReminder} className="space-y-4">
+              <form onSubmit={handleCreateReminder} className="space-y-4 text-xs">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
                   <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">
                     Tambah Jadwal Pengingat Baru
                   </h4>
                   <button
                     type="button"
-                    onClick={() => setIsAddingNew(false)}
+                    onClick={() => {
+                      playClickSound();
+                      setIsAddingNew(false);
+                    }}
                     className="text-xs font-semibold text-slate-500 hover:text-slate-800"
                   >
                     Batal
@@ -241,12 +257,13 @@ export const ReminderModal: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => {
+                        playClickSound();
                         setType('measurement');
                         setTitle('Cek Tensi Rutin');
                       }}
-                      className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+                      className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] ${
                         type === 'measurement'
-                          ? 'bg-teal-50 dark:bg-teal-950/60 border-teal-500 text-teal-600 dark:text-teal-400'
+                          ? 'bg-teal-55 dark:bg-teal-950/60 border-teal-500 text-teal-600 dark:text-teal-400'
                           : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500'
                       }`}
                     >
@@ -256,12 +273,13 @@ export const ReminderModal: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => {
+                        playClickSound();
                         setType('medication');
                         setTitle('Minum Obat Amlodipine');
                       }}
-                      className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+                      className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] ${
                         type === 'medication'
-                          ? 'bg-purple-50 dark:bg-purple-950/60 border-purple-500 text-purple-600 dark:text-purple-400'
+                          ? 'bg-purple-55 dark:bg-purple-950/60 border-purple-500 text-purple-600 dark:text-purple-400'
                           : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500'
                       }`}
                     >
@@ -280,7 +298,7 @@ export const ReminderModal: React.FC = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Contoh: Cek Tensi Pagi Hari / Minum Obat"
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none"
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-105 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none"
                     required
                   />
                 </div>
@@ -294,7 +312,7 @@ export const ReminderModal: React.FC = () => {
                       type="time"
                       value={time}
                       onChange={(e) => setTime(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none"
+                      className="w-full px-3 py-2.5 rounded-xl bg-slate-105 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none"
                       required
                     />
                   </div>
@@ -309,7 +327,7 @@ export const ReminderModal: React.FC = () => {
                         value={dosage}
                         onChange={(e) => setDosage(e.target.value)}
                         placeholder="Contoh: 1 tablet (5mg)"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
+                        className="w-full px-3 py-2.5 rounded-xl bg-slate-105 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
                       />
                     </div>
                   )}
@@ -328,10 +346,10 @@ export const ReminderModal: React.FC = () => {
                           key={day}
                           type="button"
                           onClick={() => toggleDay(idx)}
-                          className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${
+                          className={`w-9 h-9 rounded-xl text-xs font-bold transition-all active:scale-[0.98] ${
                             isSelected
                               ? 'bg-amber-500 text-white shadow-md'
-                              : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-450'
                           }`}
                         >
                           {day}
@@ -344,14 +362,17 @@ export const ReminderModal: React.FC = () => {
                 <div className="pt-2 flex items-center justify-end gap-2">
                   <button
                     type="button"
-                    onClick={() => setIsAddingNew(false)}
+                    onClick={() => {
+                      playClickSound();
+                      setIsAddingNew(false);
+                    }}
                     className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600"
                   >
                     Batal
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md"
+                    className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-md transition-all active:scale-[0.98]"
                   >
                     Simpan Jadwal
                   </button>

@@ -2,6 +2,7 @@ import React from 'react';
 import { BPReading } from '../../types/blood-pressure';
 import { classifyBP } from '../../utils/bp-classifier';
 import { formatDateIndonesian } from '../../utils/formatters';
+import { playClickSound } from '../../utils/audio-fx';
 import { Heart, Edit3, Trash2, Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -31,13 +32,13 @@ export const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onEdit, onDel
         <div className="space-y-1.5 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
             {/* BP Value */}
-            <span className="text-xl font-black text-slate-900 dark:text-slate-100">
+            <span className="text-xl font-black text-slate-900 dark:text-slate-100 font-mono">
               {reading.systolic} / {reading.diastolic}
-              <span className="text-xs font-semibold text-slate-400 ml-1">mmHg</span>
+              <span className="text-xs font-semibold text-slate-400 ml-1 font-sans">mmHg</span>
             </span>
 
             {/* Category Badge */}
-            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${category.badgeClass}`}>
+            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border uppercase tracking-wider ${category.badgeClass}`}>
               {category.label}
             </span>
           </div>
@@ -56,7 +57,7 @@ export const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onEdit, onDel
 
             {/* Position & Arm */}
             {reading.position && (
-              <span className="capitalize text-[11px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
+              <span className="capitalize text-[11px] bg-slate-105 dark:bg-slate-800 px-2 py-0.5 rounded-md">
                 {reading.position} • {reading.arm || 'kiri'}
               </span>
             )}
@@ -68,7 +69,7 @@ export const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onEdit, onDel
               {reading.tags.map((t) => (
                 <span
                   key={t}
-                  className="inline-flex items-center gap-1 text-[10px] font-semibold bg-teal-50 text-teal-800 dark:bg-teal-950/60 dark:text-teal-300 px-2 py-0.5 rounded-md"
+                  className="inline-flex items-center gap-1 text-[10px] font-semibold bg-teal-55 text-teal-800 dark:bg-teal-950/60 dark:text-teal-300 px-2 py-0.5 rounded-md"
                 >
                   <Tag className="w-2.5 h-2.5" />
                   {t}
@@ -85,21 +86,27 @@ export const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onEdit, onDel
           )}
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons with click sound and active tap effect */}
         <div className="flex items-center gap-1 self-end sm:self-center shrink-0">
           <button
-            onClick={() => onEdit(reading)}
-            className="p-2 rounded-xl text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            onClick={() => {
+              playClickSound();
+              onEdit(reading);
+            }}
+            className="p-2.5 rounded-xl text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-90"
             title="Edit Catatan"
           >
-            <Edit3 className="w-4 h-4" />
+            <Edit3 className="w-4.5 h-4.5" />
           </button>
           <button
-            onClick={() => reading.id && onDelete(reading.id)}
-            className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            onClick={() => {
+              playClickSound();
+              reading.id && onDelete(reading.id);
+            }}
+            className="p-2.5 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-90"
             title="Hapus Catatan"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-4.5 h-4.5" />
           </button>
         </div>
 

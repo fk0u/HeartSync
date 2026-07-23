@@ -4,6 +4,7 @@ import { useProfiles } from '../../hooks/useProfiles';
 import { db } from '../../db';
 import { Profile, RelationshipType } from '../../types/blood-pressure';
 import { getRelationshipLabel } from '../../utils/formatters';
+import { playClickSound, playSuccessChime } from '../../utils/audio-fx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, UserPlus, Edit3, Trash2, Check, User } from 'lucide-react';
 import { ConfirmModal } from '../common/ConfirmModal';
@@ -46,6 +47,7 @@ export const ProfileModal: React.FC = () => {
   };
 
   const handleStartEdit = (p: Profile) => {
+    playClickSound();
     setEditingProfile(p);
     setName(p.name);
     setRelationship(p.relationship);
@@ -74,6 +76,7 @@ export const ProfileModal: React.FC = () => {
           targetDiastolic,
           notes
         });
+        playSuccessChime();
         addToast({ type: 'success', title: 'Profil Diperbarui', message: `Profil ${name} telah diperbarui.` });
       } else {
         const newId = `profile-${Date.now()}`;
@@ -89,6 +92,7 @@ export const ProfileModal: React.FC = () => {
           notes,
           createdAt: new Date().toISOString()
         });
+        playSuccessChime();
         switchProfile(newId);
         addToast({ type: 'success', title: 'Profil Baru Ditambahkan', message: `Profil ${name} telah dibuat & diaktifkan.` });
       }
@@ -115,6 +119,7 @@ export const ProfileModal: React.FC = () => {
         if (remaining.length > 0) switchProfile(remaining[0].id);
       }
 
+      playSuccessChime();
       addToast({ type: 'success', title: 'Profil Dihapus', message: 'Profil dan seluruh riwayatnya telah dihapus.' });
     } catch (error) {
       addToast({ type: 'error', title: 'Gagal Hapus', message: 'Tidak dapat menghapus profil.' });
@@ -146,6 +151,7 @@ export const ProfileModal: React.FC = () => {
             </div>
             <button
               onClick={() => {
+                playClickSound();
                 resetForm();
                 closeModal();
               }}
@@ -159,17 +165,18 @@ export const ProfileModal: React.FC = () => {
             
             {/* View / Edit Mode Selector */}
             {!isAddingNew ? (
-              <div className="space-y-4">
+              <div className="space-y-4 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
                     Daftar Profil Terdaftar ({profiles.length})
                   </span>
                   <button
                     onClick={() => {
+                      playClickSound();
                       resetForm();
                       setIsAddingNew(true);
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-md transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-md transition-all active:scale-95"
                   >
                     <UserPlus className="w-3.5 h-3.5" />
                     Tambah Profil
@@ -190,7 +197,10 @@ export const ProfileModal: React.FC = () => {
                         }`}
                       >
                         <div
-                          onClick={() => switchProfile(p.id)}
+                          onClick={() => {
+                            playClickSound();
+                            switchProfile(p.id);
+                          }}
                           className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
                         >
                           <span className="text-2xl">{p.avatar}</span>
@@ -214,15 +224,18 @@ export const ProfileModal: React.FC = () => {
                         <div className="flex items-center gap-1 shrink-0">
                           <button
                             onClick={() => handleStartEdit(p)}
-                            className="p-2 rounded-xl text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                            className="p-2 rounded-xl text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-all active:scale-90"
                             title="Edit Profil"
                           >
                             <Edit3 className="w-4 h-4" />
                           </button>
                           {profiles.length > 1 && (
                             <button
-                              onClick={() => setDeletingProfileId(p.id)}
-                              className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+                              onClick={() => {
+                                playClickSound();
+                                setDeletingProfileId(p.id);
+                              }}
+                              className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-all active:scale-90"
                               title="Hapus Profil"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -236,14 +249,17 @@ export const ProfileModal: React.FC = () => {
               </div>
             ) : (
               /* Add / Edit Profile Form */
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4 text-xs">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
                   <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">
                     {editingProfile ? `Edit Profil: ${editingProfile.name}` : 'Tambah Profil Anggota Keluarga'}
                   </h4>
                   <button
                     type="button"
-                    onClick={resetForm}
+                    onClick={() => {
+                      playClickSound();
+                      resetForm();
+                    }}
                     className="text-xs font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
                   >
                     Batal
@@ -260,8 +276,11 @@ export const ProfileModal: React.FC = () => {
                       <button
                         key={emoji}
                         type="button"
-                        onClick={() => setAvatar(emoji)}
-                        className={`w-10 h-10 rounded-2xl text-xl flex items-center justify-center transition-all ${
+                        onClick={() => {
+                          playClickSound();
+                          setAvatar(emoji);
+                        }}
+                        className={`w-10 h-10 rounded-2xl text-xl flex items-center justify-center transition-all active:scale-90 shrink-0 ${
                           avatar === emoji
                             ? 'bg-teal-100 dark:bg-teal-950 border-2 border-teal-500 scale-105'
                             : 'bg-slate-100 dark:bg-slate-800'
@@ -283,7 +302,7 @@ export const ProfileModal: React.FC = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Contoh: Ibu Maryam / Ayah Hendra"
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-105 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
                     required
                   />
                 </div>
@@ -296,8 +315,11 @@ export const ProfileModal: React.FC = () => {
                     </label>
                     <select
                       value={relationship}
-                      onChange={(e) => setRelationship(e.target.value as any)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none"
+                      onChange={(e) => {
+                        playClickSound();
+                        setRelationship(e.target.value as any);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-slate-105 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none"
                     >
                       <option value="self">Saya Sendiri</option>
                       <option value="parent">Orang Tua (Ibu / Ayah)</option>
@@ -318,13 +340,13 @@ export const ProfileModal: React.FC = () => {
                       placeholder="Contoh: 65"
                       min={1}
                       max={120}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-105 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Target Blood Pressure */}
-                <div className="grid grid-cols-2 gap-3 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+                <div className="grid grid-cols-2 gap-3 bg-slate-55 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800">
                   <div>
                     <label className="text-[11px] font-bold text-sky-600 dark:text-sky-400 block mb-1">
                       Target Sistolik (&lt; mmHg)
@@ -359,21 +381,24 @@ export const ProfileModal: React.FC = () => {
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Contoh: Memiliki riwayat alergi obat tertentu, rutin minum Amlodipine..."
                     rows={2}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none resize-none"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-105 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none resize-none"
                   />
                 </div>
 
                 <div className="pt-2 flex items-center justify-end gap-2">
                   <button
                     type="button"
-                    onClick={resetForm}
+                    onClick={() => {
+                      playClickSound();
+                      resetForm();
+                    }}
                     className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     Batal
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-md"
+                    className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-xs shadow-md transition-all active:scale-[0.98]"
                   >
                     Simpan Profil
                   </button>

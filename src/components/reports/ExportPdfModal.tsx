@@ -3,6 +3,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { useProfiles } from '../../hooks/useProfiles';
 import { useReadings } from '../../hooks/useReadings';
 import { generateDoctorPDF } from '../../utils/pdf-generator';
+import { playClickSound, playSuccessChime } from '../../utils/audio-fx';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, FileText, Download, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -17,6 +18,7 @@ export const ExportPdfModal: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleExportPDF = async () => {
+    playClickSound();
     if (!activeProfile || readings.length === 0) {
       addToast({ type: 'warning', title: 'Tidak Ada Data', message: 'Belum ada data tensi untuk dibuatkan laporan.' });
       return;
@@ -35,6 +37,7 @@ export const ExportPdfModal: React.FC = () => {
         origin: { y: 0.6 }
       });
 
+      playSuccessChime();
       addToast({
         type: 'success',
         title: 'Laporan Dokter Siap!',
@@ -75,7 +78,10 @@ export const ExportPdfModal: React.FC = () => {
               </h3>
             </div>
             <button
-              onClick={closeModal}
+              onClick={() => {
+                playClickSound();
+                closeModal();
+              }}
               className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <X className="w-5 h-5" />
@@ -147,7 +153,7 @@ export const ExportPdfModal: React.FC = () => {
               <button
                 onClick={handleExportPDF}
                 disabled={isGenerating || readings.length === 0}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 text-white font-bold text-sm shadow-xl shadow-sky-500/25 active:scale-98 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-xl shadow-sky-500/25 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <Download className="w-4 h-4" />
                 {isGenerating ? 'Memproses PDF...' : 'Unduh Laporan PDF (1-Klik)'}
