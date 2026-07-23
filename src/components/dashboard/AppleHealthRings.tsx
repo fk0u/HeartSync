@@ -18,9 +18,9 @@ export const AppleHealthRings: React.FC<AppleHealthRingsProps> = ({ readings }) 
 
   readings.forEach((r) => {
     const cat = classifyBP(r.systolic, r.diastolic);
-    if (cat.category === 'normal') normalCount++;
-    else if (cat.category === 'elevated') elevatedCount++;
-    else if (cat.category === 'stage1') stage1Count++;
+    if (cat.key === 'normal') normalCount++;
+    else if (cat.key === 'elevated') elevatedCount++;
+    else if (cat.key === 'stage1') stage1Count++;
     else stage2Count++;
   });
 

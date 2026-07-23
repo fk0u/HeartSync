@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { DateFilterRange, BPCategoryKey, BPReading } from '../types/blood-pressure';
+import { queryClient } from '../services/query-client';
 
 export interface ToastMessage {
   id: string;
@@ -35,7 +36,7 @@ interface AppState {
 
   // Actions
   setActiveProfileId: (id: string) => void;
-  setDateFilter: (range: DateFilterRange, start?: string, end?: string) => void;
+  setDateFilter: (range: DateFilterRange, start?: string | null, end?: string | null) => void;
   setSearchQuery: (query: string) => void;
   setCategoryFilter: (category: BPCategoryKey | 'all') => void;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
@@ -84,9 +85,14 @@ export const useAppStore = create<AppState>((set) => ({
   cacheTimestamp: null,
   isCacheDirty: true,
 
-  setActiveProfileId: (id) => set({ activeProfileId: id, isCacheDirty: true }),
-  setDateFilter: (range, start = null, end = null) =>
-    set({ dateFilter: range, customStartDate: start, customEndDate: end, isCacheDirty: true }),
+  setActiveProfileId: (id) => {
+    set({ activeProfileId: id, isCacheDirty: true });
+    queryClient.invalidateQueries({ queryKey: ['readings'] });
+  },
+  setDateFilter: (range, start = null, end = null) => {
+    set({ dateFilter: range, customStartDate: start, customEndDate: end, isCacheDirty: true });
+    queryClient.invalidateQueries({ queryKey: ['readings'] });
+  },
   setSearchQuery: (query) => set({ searchQuery: query }),
   setCategoryFilter: (category) => set({ categoryFilter: category }),
   setTheme: (theme) => set({ theme }),
@@ -107,7 +113,12 @@ export const useAppStore = create<AppState>((set) => ({
   // Caching setters
   setDataLoading: (loading) => set({ isDataLoading: loading }),
   setDataRefreshing: (refreshing) => set({ isDataRefreshing: refreshing }),
-  setCacheDirty: (dirty) => set({ isCacheDirty: dirty }),
+  setCacheDirty: (dirty) => {
+    set({ isCacheDirty: dirty });
+    if (dirty) {
+      queryClient.invalidateQueries({ queryKey: ['readings'] });
+    }
+  },
   updateCacheTimestamp: () => set({ cacheTimestamp: Date.now(), isCacheDirty: false }),
 
   addToast: (toast) => {

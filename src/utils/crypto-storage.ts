@@ -37,7 +37,7 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
 /**
  * Derive an AES-256 key from a user password using PBKDF2
  */
-async function deriveKey(password: string, salt: Uint8Array, iterations = 100000): Promise<CryptoKey> {
+async function deriveKey(password: string, salt: BufferSource, iterations = 100000): Promise<CryptoKey> {
   const encoder = new TextEncoder();
   const passwordBuffer = encoder.encode(password);
 

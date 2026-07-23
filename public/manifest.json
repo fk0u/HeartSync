@@ -1,0 +1,17 @@
+{
+  "name": "HeartSync — Blood Pressure Tracker",
+  "short_name": "HeartSync",
+  "description": "Aplikasi Pencatatan & Monitoring Tekanan Darah Offline-First & Ramah Keluarga",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

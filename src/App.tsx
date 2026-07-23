@@ -1,5 +1,6 @@
 /* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 · Apple Native APK/IPA Archetype */
 import React, { useEffect, useState } from 'react';
+import { useRouterState, useNavigate } from '@tanstack/react-router';
 import { seedInitialData, db } from './db';
 import { useProfiles } from './hooks/useProfiles';
 import { useReadings } from './hooks/useReadings';
@@ -59,7 +60,19 @@ import {
 } from 'lucide-react';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
+  const routerState = useRouterState();
+  const navigate = useNavigate();
+
+  const activeTab: NavTab =
+    routerState.location.pathname === '/' ? 'dashboard' :
+    routerState.location.pathname === '/history' ? 'history' :
+    routerState.location.pathname === '/reports' ? 'reports' :
+    routerState.location.pathname === '/reminders' ? 'reminders' : 'dashboard';
+
+  const handleTabChange = (tab: NavTab) => {
+    navigate({ to: tab === 'dashboard' ? '/' : `/${tab}` });
+  };
+
   const [isDbReady, setIsDbReady] = useState(false);
   const [isRestTimerOpen, setIsRestTimerOpen] = useState(false);
 
@@ -333,7 +346,7 @@ export function App() {
                   </h3>
                   {readings.length > 0 && (
                     <button
-                      onClick={() => setActiveTab('history')}
+                      onClick={() => handleTabChange('history')}
                       className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
                     >
                       Lihat Semua <ArrowRight className="w-3.5 h-3.5" />
@@ -484,7 +497,7 @@ export function App() {
       </main>
 
       {/* Floating Bottom Navigation Bar (Hidden on desktop via Tailwind md:hidden inside component) */}
-      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <Navigation activeTab={activeTab} onTabChange={handleTabChange} />
 
       {/* Security & Backup Modal Trigger */}
       <SecurityBackupModal

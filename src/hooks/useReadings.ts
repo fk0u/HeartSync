@@ -1,5 +1,5 @@
-import { useMemo, useEffect } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { db } from '../db';
 import { useAppStore } from '../store/useAppStore';
 import { useProfiles } from './useProfiles';
@@ -15,16 +15,12 @@ export function useReadings() {
   const searchQuery = useAppStore((state) => state.searchQuery);
   const categoryFilter = useAppStore((state) => state.categoryFilter);
 
-  // Cache actions
-  const isDataLoading = useAppStore((state) => state.isDataLoading);
-  const setDataLoading = useAppStore((state) => state.setDataLoading);
-  const updateCacheTimestamp = useAppStore((state) => state.updateCacheTimestamp);
-
   const { activeProfile } = useProfiles();
 
-  // Fetch all readings for active profile sorted by timestamp desc
-  const rawReadings = useLiveQuery(
-    async () => {
+  // Fetch all readings for active profile using TanStack Query
+  const { data: rawReadings = [], isLoading, refetch } = useQuery({
+    queryKey: ['readings', activeProfileId],
+    queryFn: async () => {
       if (!activeProfileId) return [];
       return await db.readings
         .where('profileId')
@@ -32,25 +28,12 @@ export function useReadings() {
         .reverse()
         .sortBy('timestamp');
     },
-    [activeProfileId]
-  );
-
-  // Set loading state dynamically based on Dexie resolution
-  useEffect(() => {
-    if (rawReadings === undefined) {
-      setDataLoading(true);
-    } else {
-      setDataLoading(false);
-      updateCacheTimestamp();
-    }
-  }, [rawReadings, setDataLoading, updateCacheTimestamp]);
-
-  // Fallback to empty array if undefined
-  const rawReadingsList = rawReadings || [];
+    enabled: Boolean(activeProfileId)
+  });
 
   // Filtered readings based on store filters
   const filteredReadings = useMemo(() => {
-    let result = [...rawReadingsList];
+    let result = [...rawReadings];
 
     // 1. Date filter
     const now = new Date();
@@ -89,7 +72,7 @@ export function useReadings() {
     }
 
     return result;
-  }, [rawReadingsList, dateFilter, customStartDate, customEndDate, categoryFilter, searchQuery]);
+  }, [rawReadings, dateFilter, customStartDate, customEndDate, categoryFilter, searchQuery]);
 
   // Compute summary statistics including MAP, Pulse Pressure, and Target Compliance
   const stats: BPSummaryStats = useMemo(() => {
@@ -186,10 +169,11 @@ export function useReadings() {
   }, [filteredReadings, activeProfile]);
 
   return {
-    rawReadings: rawReadingsList,
+    rawReadings,
     readings: filteredReadings,
     stats,
     hasData: filteredReadings.length > 0,
-    isLoading: isDataLoading
+    isLoading,
+    refetch
   };
 }
