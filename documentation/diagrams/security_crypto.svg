@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+
+    <linearGradient id="cryptoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="600" fill="url(#bgGrad)"/>
+
+  <!-- Title -->
+  <text x="600" y="55" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="700" text-anchor="middle" letter-spacing="1">🔒 HEARTSYNC CLIENT-SIDE CRYPTOGRAPHIC SECURITY PIPELINE</text>
+  <text x="600" y="85" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="500" text-anchor="middle">AES-256-GCM Authenticated Encryption &amp; SHA-256 Tamper-Evident Chain</text>
+
+  <!-- Step 1: Input Password & JSON -->
+  <rect x="80" y="150" width="220" height="360" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="190" y="190" fill="#38bdf8" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">1. INPUT DATA</text>
+  
+  <rect x="100" y="220" width="180" height="80" rx="10" fill="#0f172a" stroke="#475569"/>
+  <text x="190" y="250" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Master Password</text>
+  <text x="190" y="275" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">User Defined</text>
+
+  <rect x="100" y="320" width="180" height="160" rx="10" fill="#0f172a" stroke="#475569"/>
+  <text x="190" y="350" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Raw Health Payload</text>
+  <text x="190" y="380" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">{ profiles: [...] }</text>
+  <text x="190" y="405" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">{ readings: [...] }</text>
+  <text x="190" y="430" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">{ habits: [...] }</text>
+
+  <!-- Arrow 1 to 2 -->
+  <line x1="300" y1="330" x2="350" y2="330" stroke="#38bdf8" stroke-width="3"/>
+  <polygon points="355,330 345,324 345,336" fill="#38bdf8"/>
+
+  <!-- Step 2: Key Derivation PBKDF2 -->
+  <rect x="360" y="150" width="240" height="360" rx="16" fill="#1e293b" stroke="#a855f7" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="480" y="190" fill="#c084fc" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">2. KEY DERIVATION</text>
+  
+  <rect x="380" y="220" width="200" height="60" rx="10" fill="#0f172a" stroke="#475569"/>
+  <text x="480" y="245" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">CSPRNG Salt Generator</text>
+  <text x="480" y="265" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">16 Bytes (128 bits)</text>
+
+  <rect x="380" y="300" width="200" height="120" rx="10" fill="#0f172a" stroke="#a855f7"/>
+  <text x="480" y="330" fill="#c084fc" font-family="sans-serif" font-size="14" font-weight="700" text-anchor="middle">PBKDF2 SHA-256</text>
+  <text x="480" y="360" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600" text-anchor="middle">100,000 Iterations</text>
+  <text x="480" y="390" fill="#34d399" font-family="monospace" font-size="12" text-anchor="middle">Derived 256-bit Key</text>
+
+  <!-- Arrow 2 to 3 -->
+  <line x1="600" y1="330" x2="650" y2="330" stroke="#a855f7" stroke-width="3"/>
+  <polygon points="655,330 645,324 645,336" fill="#a855f7"/>
+
+  <!-- Step 3: AES-256-GCM Bulk Cipher -->
+  <rect x="660" y="150" width="220" height="360" rx="16" fill="#1e293b" stroke="#ec4899" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="770" y="190" fill="#f472b6" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">3. AES-GCM CIPHER</text>
+  
+  <rect x="680" y="220" width="180" height="60" rx="10" fill="#0f172a" stroke="#475569"/>
+  <text x="770" y="245" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Initialization Vector</text>
+  <text x="770" y="265" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">12 Bytes (96 bits)</text>
+
+  <rect x="680" y="300" width="180" height="120" rx="10" fill="#0f172a" stroke="#ec4899"/>
+  <text x="770" y="335" fill="#f472b6" font-family="sans-serif" font-size="14" font-weight="700" text-anchor="middle">AES-256-GCM</text>
+  <text x="770" y="365" fill="#f1f5f9" font-family="sans-serif" font-size="11" text-anchor="middle">Authenticated Tag</text>
+  <text x="770" y="390" fill="#f1f5f9" font-family="sans-serif" font-size="11" text-anchor="middle">Web Crypto API</text>
+
+  <!-- Arrow 3 to 4 -->
+  <line x1="880" y1="330" x2="930" y2="330" stroke="#ec4899" stroke-width="3"/>
+  <polygon points="935,330 925,324 925,336" fill="#ec4899"/>
+
+  <!-- Step 4: Encrypted Output File -->
+  <rect x="940" y="150" width="180" height="360" rx="16" fill="#1e293b" stroke="#10b981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="1030" y="190" fill="#34d399" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">4. BACKUP FILE</text>
+
+  <rect x="960" y="220" width="140" height="260" rx="10" fill="#0f172a" stroke="#10b981"/>
+  <text x="1030" y="255" fill="#34d399" font-family="sans-serif" font-size="13" font-weight="700" text-anchor="middle">Encrypted JSON</text>
+  <text x="1030" y="285" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">ciphertext: "..."</text>
+  <text x="1030" y="315" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">iv: "..."</text>
+  <text x="1030" y="345" fill="#94a3b8" font-family="monospace" font-size="10" text-anchor="middle">salt: "..."</text>
+  <text x="1030" y="420" fill="#f1f5f9" font-family="sans-serif" font-size="11" font-weight="600" text-anchor="middle">Zero-Leak File</text>
+</svg>

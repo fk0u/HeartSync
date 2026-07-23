@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.03"/>
+    </linearGradient>
+
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="url(#bgGrad)"/>
+
+  <!-- Grid Lines -->
+  <g stroke="#ffffff" stroke-opacity="0.03" stroke-width="1">
+    <line x1="0" y1="100" x2="1200" y2="100"/>
+    <line x1="0" y1="250" x2="1200" y2="250"/>
+    <line x1="0" y1="400" x2="1200" y2="400"/>
+    <line x1="0" y1="550" x2="1200" y2="550"/>
+  </g>
+
+  <!-- Header Title -->
+  <text x="600" y="55" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="26" font-weight="700" text-anchor="middle" letter-spacing="1">❤️ HEARTSYNC ENTERPRISE SYSTEM ARCHITECTURE</text>
+  <text x="600" y="85" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" text-anchor="middle">Offline-First Client-Side Medical Telemetry Ecosystem</text>
+
+  <!-- LAYER 1: PRESENTATION LAYER -->
+  <rect x="80" y="120" width="1040" height="110" rx="16" fill="url(#cardGrad)" stroke="#0d9488" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="110" y="155" fill="#2dd4bf" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" letter-spacing="1">1. PRESENTATION LAYER (REACT 19 + TAILWIND CSS)</text>
+  
+  <g transform="translate(110, 170)">
+    <rect x="0" y="0" width="220" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="110" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">DesktopHeader &amp; MobileNav</text>
+    
+    <rect x="240" y="0" width="220" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="350" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">CustomProfileSelector (Apple HIG)</text>
+
+    <rect x="480" y="0" width="220" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="590" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">CalendarView &amp; HabitsTracker</text>
+
+    <rect x="720" y="0" width="260" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="850" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">StatCards, BPTrendChart, Rings</text>
+  </g>
+
+  <!-- Connection Arrow 1-2 -->
+  <line x1="600" y1="230" x2="600" y2="260" stroke="#0d9488" stroke-width="3" stroke-dasharray="6,6"/>
+  <polygon points="600,265 594,255 606,255" fill="#0d9488"/>
+
+  <!-- LAYER 2: STATE & ROUTING LAYER -->
+  <rect x="80" y="265" width="1040" height="110" rx="16" fill="url(#cardGrad)" stroke="#3b82f6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="110" y="300" fill="#60a5fa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" letter-spacing="1">2. STATE &amp; QUERY ROUTING LAYER</text>
+  
+  <g transform="translate(110, 315)">
+    <rect x="0" y="0" width="310" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="155" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Zustand Store (useAppStore)</text>
+
+    <rect x="340" y="0" width="320" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="500" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">TanStack Query v5 Memory Cache</text>
+
+    <rect x="680" y="0" width="300" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="830" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">TanStack Router Type-Safe Tree</text>
+  </g>
+
+  <!-- Connection Arrow 2-3 -->
+  <line x1="600" y1="375" x2="600" y2="405" stroke="#3b82f6" stroke-width="3" stroke-dasharray="6,6"/>
+  <polygon points="600,410 594,400 606,400" fill="#3b82f6"/>
+
+  <!-- LAYER 3: MIDDLEWARE SERVICES -->
+  <rect x="80" y="410" width="1040" height="110" rx="16" fill="url(#cardGrad)" stroke="#a855f7" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="110" y="445" fill="#c084fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" letter-spacing="1">3. SECURITY &amp; INTEROPERABILITY MIDDLEWARE LAYER</text>
+  
+  <g transform="translate(110, 460)">
+    <rect x="0" y="0" width="230" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="115" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Sanitizer &amp; Range Validator</text>
+
+    <rect x="250" y="0" width="240" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="370" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">SHA-256 Tamper Hash Chain</text>
+
+    <rect x="510" y="0" width="240" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="630" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">AES-256-GCM + PBKDF2 Crypto</text>
+
+    <rect x="770" y="0" width="210" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="875" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">HL7 FHIR v4 Exporter</text>
+  </g>
+
+  <!-- Connection Arrow 3-4 -->
+  <line x1="600" y1="520" x2="600" y2="550" stroke="#a855f7" stroke-width="3" stroke-dasharray="6,6"/>
+  <polygon points="600,555 594,545 606,545" fill="#a855f7"/>
+
+  <!-- LAYER 4: DATABASE & HARDWARE -->
+  <rect x="80" y="555" width="1040" height="110" rx="16" fill="url(#cardGrad)" stroke="#10b981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="110" y="590" fill="#34d399" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" letter-spacing="1">4. PERSISTENCE &amp; BROWSER HARDWARE LAYER</text>
+  
+  <g transform="translate(110, 605)">
+    <rect x="0" y="0" width="280" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="140" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Dexie.js IndexedDB v2 Engine</text>
+
+    <rect x="300" y="0" width="230" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="415" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Web Speech API Voice Parser</text>
+
+    <rect x="550" y="0" width="220" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="660" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Web Audio API Sound Synth</text>
+
+    <rect x="790" y="0" width="190" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="885" y="26" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">PWA Service Worker</text>
+  </g>
+</svg>

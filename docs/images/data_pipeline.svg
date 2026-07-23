@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="600" fill="url(#bgGrad)"/>
+
+  <!-- Title -->
+  <text x="600" y="55" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="700" text-anchor="middle" letter-spacing="1">⚡ HEARTSYNC REAL-TIME OFFLINE-FIRST TELEMETRY PIPELINE</text>
+  <text x="600" y="85" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="500" text-anchor="middle">Form/Voice Input -> Sanitization -> AHA Risk Classifier -> Zustand -> Query Cache -> Dexie DB</text>
+
+  <!-- Step 1: Input -->
+  <rect x="80" y="150" width="220" height="360" rx="16" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="190" y="190" fill="#60a5fa" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">1. TELEMETRY INPUT</text>
+  
+  <rect x="100" y="220" width="180" height="110" rx="10" fill="#0f172a" stroke="#3b82f6"/>
+  <text x="190" y="250" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Voice Dictation</text>
+  <text x="190" y="275" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">Web Speech API</text>
+  <text x="190" y="300" fill="#38bdf8" font-family="monospace" font-size="10" text-anchor="middle">"Tensi 120 per 80"</text>
+
+  <rect x="100" y="350" width="180" height="130" rx="10" fill="#0f172a" stroke="#334155"/>
+  <text x="190" y="380" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Manual Form Entry</text>
+  <text x="190" y="410" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">ReadingFormModal</text>
+  <text x="190" y="435" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">Systolic, Diastolic, Pulse</text>
+
+  <!-- Arrow 1 to 2 -->
+  <line x1="300" y1="330" x2="350" y2="330" stroke="#3b82f6" stroke-width="3"/>
+  <polygon points="355,330 345,324 345,336" fill="#3b82f6"/>
+
+  <!-- Step 2: Processing -->
+  <rect x="360" y="150" width="220" height="360" rx="16" fill="#1e293b" stroke="#a855f7" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="470" y="190" fill="#c084fc" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">2. SANITIZE &amp; CLASSIFY</text>
+  
+  <rect x="380" y="220" width="180" height="110" rx="10" fill="#0f172a" stroke="#475569"/>
+  <text x="470" y="250" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Range Sanitizer</text>
+  <text x="470" y="275" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">sanitizer.ts</text>
+  <text x="470" y="300" fill="#34d399" font-family="sans-serif" font-size="11" text-anchor="middle">Bounds Verified</text>
+
+  <rect x="380" y="350" width="180" height="130" rx="10" fill="#0f172a" stroke="#a855f7"/>
+  <text x="470" y="380" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">AHA 2017 Classifier</text>
+  <text x="470" y="410" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">bp-classifier.ts</text>
+  <text x="470" y="435" fill="#c084fc" font-family="sans-serif" font-size="11" font-weight="600" text-anchor="middle">Evaluates Category</text>
+
+  <!-- Arrow 2 to 3 -->
+  <line x1="580" y1="330" x2="630" y2="330" stroke="#a855f7" stroke-width="3"/>
+  <polygon points="635,330 625,324 625,336" fill="#a855f7"/>
+
+  <!-- Step 3: State & Cache -->
+  <rect x="640" y="150" width="220" height="360" rx="16" fill="#1e293b" stroke="#0d9488" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="750" y="190" fill="#2dd4bf" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">3. STATE &amp; CACHE</text>
+  
+  <rect x="660" y="220" width="180" height="110" rx="10" fill="#0f172a" stroke="#475569"/>
+  <text x="750" y="250" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">Zustand Store</text>
+  <text x="750" y="275" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">useAppStore.ts</text>
+  <text x="750" y="300" fill="#2dd4bf" font-family="sans-serif" font-size="11" text-anchor="middle">setCacheDirty(true)</text>
+
+  <rect x="660" y="350" width="180" height="130" rx="10" fill="#0f172a" stroke="#0d9488"/>
+  <text x="750" y="380" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="600" text-anchor="middle">TanStack Query v5</text>
+  <text x="750" y="410" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">invalidateQueries</text>
+  <text x="750" y="435" fill="#2dd4bf" font-family="monospace" font-size="11" text-anchor="middle">['readings']</text>
+
+  <!-- Arrow 3 to 4 -->
+  <line x1="860" y1="330" x2="910" y2="330" stroke="#0d9488" stroke-width="3"/>
+  <polygon points="915,330 905,324 905,336" fill="#0d9488"/>
+
+  <!-- Step 4: IndexedDB Persistence -->
+  <rect x="920" y="150" width="200" height="360" rx="16" fill="#1e293b" stroke="#10b981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="1020" y="190" fill="#34d399" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">4. PERSISTENCE</text>
+
+  <rect x="940" y="220" width="160" height="260" rx="10" fill="#0f172a" stroke="#10b981"/>
+  <text x="1020" y="255" fill="#34d399" font-family="sans-serif" font-size="13" font-weight="700" text-anchor="middle">Dexie IndexedDB</text>
+  <text x="1020" y="285" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">db.readings.add()</text>
+  <text x="1020" y="345" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600" text-anchor="middle">Zero Latency</text>
+  <text x="1020" y="375" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600" text-anchor="middle">Local Storage</text>
+  <text x="1020" y="420" fill="#34d399" font-family="sans-serif" font-size="11" font-weight="600" text-anchor="middle">100% Offline</text>
+</svg>

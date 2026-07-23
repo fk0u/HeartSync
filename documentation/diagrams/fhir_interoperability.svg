@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="600" fill="url(#bgGrad)"/>
+
+  <!-- Title -->
+  <text x="600" y="55" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="700" text-anchor="middle" letter-spacing="1">🏥 HL7 FHIR V4 OBSERVATION &amp; LOINC MEDICAL INTEROPERABILITY</text>
+  <text x="600" y="85" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="500" text-anchor="middle">Standardized Cardiovascular Data Exchange for Hospital EHRs &amp; SATUSEHAT Portal</text>
+
+  <!-- Bundle Box -->
+  <rect x="100" y="130" width="1000" height="420" rx="16" fill="#1e293b" stroke="#0d9488" stroke-width="2" filter="url(#shadow)"/>
+  <text x="140" y="170" fill="#2dd4bf" font-family="sans-serif" font-size="16" font-weight="700">HL7 FHIR v4 Bundle Resource (resourceType: "Bundle", type: "collection")</text>
+
+  <!-- Observation Container -->
+  <rect x="130" y="195" width="940" height="330" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="160" y="230" fill="#f1f5f9" font-family="sans-serif" font-size="14" font-weight="700">Observation Resource (LOINC Panel: 85354-9 "Blood pressure panel with all children optional")</text>
+  <text x="160" y="255" fill="#94a3b8" font-family="monospace" font-size="12">Subject: Patient/profile-id | Category: vital-signs | Status: final</text>
+
+  <!-- Component 1: Systolic -->
+  <rect x="160" y="280" width="270" height="210" rx="10" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="295" y="315" fill="#fca5a5" font-family="sans-serif" font-size="14" font-weight="700" text-anchor="middle">Component 1: Systolic</text>
+  <rect x="180" y="335" width="230" height="40" rx="6" fill="#0f172a" stroke="#475569"/>
+  <text x="295" y="360" fill="#f1f5f9" font-family="monospace" font-size="11" text-anchor="middle">LOINC Code: 8480-6</text>
+  <rect x="180" y="390" width="230" height="80" rx="6" fill="#0f172a" stroke="#ef4444"/>
+  <text x="295" y="420" fill="#f8fafc" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">120 mmHg</text>
+  <text x="295" y="445" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">UCUM: mm[Hg]</text>
+
+  <!-- Component 2: Diastolic -->
+  <rect x="465" y="280" width="270" height="210" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="600" y="315" fill="#93c5fd" font-family="sans-serif" font-size="14" font-weight="700" text-anchor="middle">Component 2: Diastolic</text>
+  <rect x="485" y="335" width="230" height="40" rx="6" fill="#0f172a" stroke="#475569"/>
+  <text x="600" y="360" fill="#f1f5f9" font-family="monospace" font-size="11" text-anchor="middle">LOINC Code: 8462-4</text>
+  <rect x="485" y="390" width="230" height="80" rx="6" fill="#0f172a" stroke="#3b82f6"/>
+  <text x="600" y="420" fill="#f8fafc" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">80 mmHg</text>
+  <text x="600" y="445" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">UCUM: mm[Hg]</text>
+
+  <!-- Component 3: Heart Rate -->
+  <rect x="770" y="280" width="270" height="210" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="905" y="315" fill="#6ee7b7" font-family="sans-serif" font-size="14" font-weight="700" text-anchor="middle">Component 3: Heart Rate</text>
+  <rect x="790" y="335" width="230" height="40" rx="6" fill="#0f172a" stroke="#475569"/>
+  <text x="905" y="360" fill="#f1f5f9" font-family="monospace" font-size="11" text-anchor="middle">LOINC Code: 8867-4</text>
+  <rect x="790" y="390" width="230" height="80" rx="6" fill="#0f172a" stroke="#10b981"/>
+  <text x="905" y="420" fill="#f8fafc" font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle">72 BPM</text>
+  <text x="905" y="445" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">UCUM: /min</text>
+</svg>
