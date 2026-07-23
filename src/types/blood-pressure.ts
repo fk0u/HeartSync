@@ -29,6 +29,19 @@ export interface BPReading {
   notes?: string;
 }
 
+export interface HabitLog {
+  id?: number;
+  profileId: string;
+  date: string; // YYYY-MM-DD
+  sleepTime: string; // e.g. "22:30"
+  wakeTime: string; // e.g. "06:30"
+  sleepHours: number; // calculated hours
+  screenTimeHours: number; // screen time in hours
+  outdoorMinutes: number; // outdoor activity in minutes
+  activityNotes?: string;
+  timestamp: string;
+}
+
 export type BPCategoryKey = 'normal' | 'elevated' | 'stage1' | 'stage2' | 'crisis';
 
 export interface BPCategory {
@@ -85,4 +98,5 @@ export interface BackupDataFormat {
   profiles: Profile[];
   readings: BPReading[];
   reminders: Reminder[];
+  habits?: HabitLog[];
 }

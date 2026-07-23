@@ -1,23 +1,28 @@
 /**
  * Adobe & Awwwards Grade Web Audio API UI Sound Synthesizer
- * Zero external audio files required! Synthesizes clean, subtle tactile audio feedback.
+ * Safe, zero-dependency tactile audio feedback that NEVER throws errors or blocks UI interaction.
  */
 
 let audioCtx: AudioContext | null = null;
 let soundEnabled = true;
 
 function getAudioContext(): AudioContext | null {
-  if (typeof window === 'undefined') return null;
-  if (!audioCtx) {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-    if (AudioContextClass) {
-      audioCtx = new AudioContextClass();
+  try {
+    if (typeof window === 'undefined') return null;
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
     }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      // Promise from resume is caught silently
+      audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+  } catch (e) {
+    return null;
   }
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  return audioCtx;
 }
 
 export function setSoundEnabled(enabled: boolean) {
@@ -32,11 +37,11 @@ export function isSoundEnabled(): boolean {
  * Play subtle tactile click sound on button press
  */
 export function playClickSound() {
-  if (!soundEnabled) return;
-  const ctx = getAudioContext();
-  if (!ctx) return;
-
   try {
+    if (!soundEnabled) return;
+    const ctx = getAudioContext();
+    if (!ctx || ctx.state !== 'running') return;
+
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
@@ -53,7 +58,7 @@ export function playClickSound() {
     osc.start();
     osc.stop(ctx.currentTime + 0.03);
   } catch (e) {
-    // Ignore audio autoplay restrictions
+    // Audio errors must NEVER block UI event execution!
   }
 }
 
@@ -61,11 +66,11 @@ export function playClickSound() {
  * Play success chime upon completing an action
  */
 export function playSuccessChime() {
-  if (!soundEnabled) return;
-  const ctx = getAudioContext();
-  if (!ctx) return;
-
   try {
+    if (!soundEnabled) return;
+    const ctx = getAudioContext();
+    if (!ctx || ctx.state !== 'running') return;
+
     const notes = [523.25, 659.25, 783.99]; // C5, E5, G5 major triad
     notes.forEach((freq, idx) => {
       const osc = ctx.createOscillator();
@@ -84,7 +89,7 @@ export function playSuccessChime() {
       osc.stop(ctx.currentTime + idx * 0.08 + 0.25);
     });
   } catch (e) {
-    // Ignore audio restrictions
+    // Audio errors must NEVER block UI event execution!
   }
 }
 
@@ -92,11 +97,11 @@ export function playSuccessChime() {
  * Play alert tone for high BP warnings
  */
 export function playAlertSound() {
-  if (!soundEnabled) return;
-  const ctx = getAudioContext();
-  if (!ctx) return;
-
   try {
+    if (!soundEnabled) return;
+    const ctx = getAudioContext();
+    if (!ctx || ctx.state !== 'running') return;
+
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
@@ -113,6 +118,6 @@ export function playAlertSound() {
     osc.start();
     osc.stop(ctx.currentTime + 0.25);
   } catch (e) {
-    // Ignore
+    // Audio errors must NEVER block UI event execution!
   }
 }

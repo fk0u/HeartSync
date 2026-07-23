@@ -59,6 +59,7 @@ export const DesktopHeader: React.FC = () => {
             return (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => handleTabClick(item.id)}
                 className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${
                   isActive
@@ -76,6 +77,7 @@ export const DesktopHeader: React.FC = () => {
         {/* Right: Actions & Custom Profile Selector */}
         <div className="flex items-center gap-3 shrink-0">
           <button
+            type="button"
             onClick={() => {
               playClickSound();
               openReadingModal();

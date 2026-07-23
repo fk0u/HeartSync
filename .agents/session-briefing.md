@@ -2,14 +2,13 @@
 
 ## Overview
 - **App Name:** HeartSync
-- **Description:** Aplikasi Pencatatan & Monitoring Tekanan Darah (Custom Apple Profile Selector, Dual Header Navigation & Voice Dictation)
-- **High-Impact Real-time Features:** Custom Apple Profile Selector + Voice Dictation (Web Speech API) + Dual Header (Desktop & Mobile) + Medication CRUD + SOS Emergency Direct Call
-- **Tech Stack:** React 19 + TypeScript + Rsbuild v2 + Tailwind CSS + Dexie.js (IndexedDB) + TanStack Query v5 + TanStack Router v1 + Zustand + Recharts + jsPDF + Typst + Web Crypto API + Web Audio API + Web Speech API + HTML5 Canvas
+- **Description:** Aplikasi Pencatatan & Monitoring Tekanan Darah (Interactive Month Calendar & Habits/Lifestyle Tracker System)
+- **High-Impact Real-time Features:** Interactive Health Calendar + Sleep & Habit Tracker + Safe Web Audio Synthesizer + Custom Apple Profile Selector + Voice Dictation (Web Speech API) + Dual Header + Medication CRUD + SOS Emergency Direct Call
+- **Tech Stack:** React 19 + TypeScript + Rsbuild v2 + Tailwind CSS + Dexie.js (IndexedDB) + TanStack Query v5 + TanStack Router v1 + Zustand + Recharts + jsPDF + Web Crypto API + Web Audio API + Web Speech API
 
-## Final High-Priority Tasks Completed
-- [x] Fixed all button response issues with tactile haptic audio clicks (`playClickSound()`) and active spring scaling (`active:scale-95`).
-- [x] Replaced default browser `<select>` with custom Apple-style popover selector ([CustomProfileSelector.tsx](file:///d:/Project/HeartSync/src/components/profiles/CustomProfileSelector.tsx)).
-- [x] Separated header navigation into `DesktopHeader.tsx` (with inline desktop tabs) and `MobileHeader.tsx` ([Header.tsx](file:///d:/Project/HeartSync/src/components/layout/Header.tsx)).
-- [x] Created Web Speech API Voice Recognition module ([voice-recognition.ts](file:///d:/Project/HeartSync/src/utils/voice-recognition.ts)) and integrated a "Dikte Suara" button inside [ReadingFormModal.tsx](file:///d:/Project/HeartSync/src/components/readings/ReadingFormModal.tsx).
-- [x] Verified full typecheck (`npm run lint` — 0 errors) and build (`npm run build` — 1.44s).
-- [x] Recompiled Graphify Knowledge Graph (`graphify update . --force` — 2655 nodes, 3230 edges).
+## Advanced Features Added
+- [x] **Interactive Health Calendar ([CalendarView.tsx](file:///d:/Project/HeartSync/src/components/calendar/CalendarView.tsx))**: Visual 7-day week grid for monthly/yearly navigation, badge status indicators per date, and interactive date inspector for historical readings.
+- [x] **Lifestyle & Habit Tracker ([HabitsTrackerModal.tsx](file:///d:/Project/HeartSync/src/components/habits/HabitsTrackerModal.tsx))**: Bedtime and wake-up time recorder (calculating total sleep hours with clinical risk alert for < 6 hours sleep), screen time duration logger (HP & computer), outdoor activity / exercise logger, and Dexie IndexedDB persistence.
+- [x] **Database Schema Upgrade**: Upgraded `HeartSyncDatabase` to version 2 with `habits` table.
+- [x] Verified full typecheck (`npm run lint` — 0 errors) and build (`npm run build` — 2.15s).
+- [x] Updated Graphify Knowledge Graph (`graphify update . --force` — 2664 nodes, 3259 edges).

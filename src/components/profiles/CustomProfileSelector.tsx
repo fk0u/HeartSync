@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useProfiles } from '../../hooks/useProfiles';
 import { useAppStore } from '../../store/useAppStore';
 import { getRelationshipLabel } from '../../utils/formatters';
-import { playClickSound } from '../../utils/audio-fx';
+import { playClickSound, playSuccessChime } from '../../utils/audio-fx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Plus, Check, User, Users } from 'lucide-react';
 
@@ -10,6 +10,7 @@ export const CustomProfileSelector: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { profiles, activeProfile, switchProfile } = useProfiles();
   const openProfileModal = useAppStore((state) => state.openProfileModal);
+  const addToast = useAppStore((state) => state.addToast);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
@@ -23,10 +24,22 @@ export const CustomProfileSelector: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleSelectProfile = (profileId: string, profileName: string) => {
+    playSuccessChime();
+    switchProfile(profileId);
+    setIsOpen(false);
+    addToast({
+      type: 'success',
+      title: 'Profil Berhasil Dibatasi',
+      message: `Sekarang melihat data kesehatan untuk ${profileName}`
+    });
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Trigger Button */}
       <button
+        type="button"
         onClick={() => {
           playClickSound();
           setIsOpen(!isOpen);
@@ -68,11 +81,8 @@ export const CustomProfileSelector: React.FC = () => {
                 return (
                   <button
                     key={p.id}
-                    onClick={() => {
-                      playClickSound();
-                      switchProfile(p.id);
-                      setIsOpen(false);
-                    }}
+                    type="button"
+                    onClick={() => handleSelectProfile(p.id, p.name)}
                     className={`w-full flex items-center justify-between p-2.5 rounded-xl transition-all active:scale-[0.98] ${
                       isActive
                         ? 'bg-teal-50 dark:bg-teal-950/60 border border-teal-500/30'
@@ -100,6 +110,7 @@ export const CustomProfileSelector: React.FC = () => {
             {/* Bottom Add Profile Action */}
             <div className="pt-1 mt-1 border-t border-slate-100 dark:border-slate-800">
               <button
+                type="button"
                 onClick={() => {
                   playClickSound();
                   setIsOpen(false);

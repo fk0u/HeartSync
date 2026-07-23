@@ -1,10 +1,11 @@
 import Dexie, { type Table } from 'dexie';
-import { Profile, BPReading, Reminder } from '../types/blood-pressure';
+import { Profile, BPReading, Reminder, HabitLog } from '../types/blood-pressure';
 
 export class HeartSyncDatabase extends Dexie {
   profiles!: Table<Profile, string>;
   readings!: Table<BPReading, number>;
   reminders!: Table<Reminder, number>;
+  habits!: Table<HabitLog, number>;
 
   constructor() {
     super('HeartSyncDB');
@@ -12,6 +13,13 @@ export class HeartSyncDatabase extends Dexie {
       profiles: 'id, name, relationship, isDefault, createdAt',
       readings: '++id, profileId, timestamp, systolic, diastolic, pulse',
       reminders: '++id, profileId, type, time, enabled'
+    });
+
+    this.version(2).stores({
+      profiles: 'id, name, relationship, isDefault, createdAt',
+      readings: '++id, profileId, timestamp, systolic, diastolic, pulse',
+      reminders: '++id, profileId, type, time, enabled',
+      habits: '++id, profileId, date, timestamp'
     });
   }
 }

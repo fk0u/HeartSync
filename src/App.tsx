@@ -13,11 +13,12 @@ import { playClickSound, playSuccessChime } from './utils/audio-fx';
 import { Header } from './components/layout/Header';
 import { Navigation, NavTab } from './components/layout/Navigation';
 
-// Dashboard Components
+// Dashboard & Calendar Components
 import { StatCards } from './components/dashboard/StatCards';
 import { BPTrendChart } from './components/dashboard/BPTrendChart';
 import { EmergencyAlert } from './components/dashboard/EmergencyAlert';
 import { AppleHealthRings } from './components/dashboard/AppleHealthRings';
+import { CalendarView } from './components/calendar/CalendarView';
 
 // Readings Components
 import { ReadingCard } from './components/readings/ReadingCard';
@@ -33,11 +34,12 @@ import { ConfirmModal } from './components/common/ConfirmModal';
 import { BPRestTimerModal } from './components/timer/BPRestTimerModal';
 import { ShimmerSkeletonCard } from './components/common/ShimmerSkeleton';
 
-// Action Modals
+// Action & Habit Modals
 import { SecurityBackupModal } from './components/security/SecurityBackupModal';
 import { SodiumTrackerModal } from './components/dash/SodiumTrackerModal';
 import { FamilySOSModal } from './components/emergency/FamilySOSModal';
 import { MedicationTrackerModal } from './components/meds/MedicationTrackerModal';
+import { HabitsTrackerModal } from './components/habits/HabitsTrackerModal';
 
 // Icons
 import {
@@ -46,7 +48,7 @@ import {
   Bell,
   Heart,
   Download,
-  Calendar,
+  Calendar as CalendarIcon,
   Sparkles,
   ArrowRight,
   Timer,
@@ -54,7 +56,7 @@ import {
   Utensils,
   AlertTriangle,
   Pill,
-  Lock,
+  Moon,
   RefreshCw,
   Clock
 } from 'lucide-react';
@@ -81,6 +83,7 @@ export function App() {
   const [isSodiumModalOpen, setIsSodiumModalOpen] = useState(false);
   const [isSOSModalOpen, setIsSOSModalOpen] = useState(false);
   const [isMedModalOpen, setIsMedModalOpen] = useState(false);
+  const [isHabitsModalOpen, setIsHabitsModalOpen] = useState(false);
 
   const { activeProfile } = useProfiles();
   const { readings, rawReadings, stats, isLoading } = useReadings();
@@ -147,6 +150,7 @@ export function App() {
   };
 
   const handleSpeakLatestReading = () => {
+    playClickSound();
     const latest = stats.latestReading;
     const category = latest ? classifyBP(latest.systolic, latest.diastolic) : null;
     if (!latest) {
@@ -163,7 +167,6 @@ export function App() {
     setDataRefreshing(true);
     setCacheDirty(true);
 
-    // Simulated short delay for native pull-to-refresh spinner feel
     setTimeout(() => {
       setDataRefreshing(false);
       playSuccessChime();
@@ -189,6 +192,15 @@ export function App() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col pb-28 md:pb-8 transition-colors">
       
+      {/* Toast Notifications */}
+      <ToastContainer />
+
+      {/* Modals */}
+      <ReadingFormModal />
+      <ProfileModal />
+      <ExportPdfModal />
+      <ReminderModal />
+
       {/* Apple HIG Clean Header */}
       <Header />
 
@@ -206,6 +218,7 @@ export function App() {
                 <span>Cache: {cacheTimestamp ? `Terakhir sinkron ${new Date(cacheTimestamp).toLocaleTimeString('id-ID')}` : 'Belum sinkron'}</span>
               </div>
               <button
+                type="button"
                 onClick={handleManualCacheRefresh}
                 disabled={isDataRefreshing}
                 className="inline-flex items-center gap-1.5 font-bold text-teal-600 dark:text-teal-400 hover:underline active:scale-95 transition-all"
@@ -231,8 +244,12 @@ export function App() {
                 </div>
               </div>
               <button
-                onClick={() => setIsRestTimerOpen(true)}
-                className="hallmark-button-secondary px-4 py-2 text-xs shrink-0 font-bold"
+                type="button"
+                onClick={() => {
+                  playClickSound();
+                  setIsRestTimerOpen(true);
+                }}
+                className="hallmark-button-secondary px-4 py-2 text-xs shrink-0 font-bold active:scale-95"
               >
                 Mulai Timer
               </button>
@@ -263,14 +280,33 @@ export function App() {
             {/* SwiftUI Quick Tools & Accessibility Grid */}
             <div className="space-y-3">
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Peralatan &amp; Aksesibilitas Kesehatan
+                Peralatan &amp; Pelacak Kebiasaan Gaya Hidup
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 
+                {/* Habits & Sleep Tracker */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setIsHabitsModalOpen(true);
+                  }}
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/20 dark:bg-indigo-950/10"
+                >
+                  <div className="p-2 rounded-xl bg-indigo-500 text-white w-fit shadow-md shadow-indigo-500/20">
+                    <Moon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-xs text-slate-900 dark:text-slate-100">Kebiasaan &amp; Tidur</h4>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400">Jam tidur, HP &amp; outdoor</p>
+                  </div>
+                </button>
+
                 {/* Voice Assistant */}
                 <button
+                  type="button"
                   onClick={handleSpeakLatestReading}
-                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800"
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   <div className="p-2 rounded-xl bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 w-fit">
                     <Volume2 className="w-5 h-5" />
@@ -283,8 +319,12 @@ export function App() {
 
                 {/* Sodium Tracker */}
                 <button
-                  onClick={() => setIsSodiumModalOpen(true)}
-                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800"
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setIsSodiumModalOpen(true);
+                  }}
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 w-fit">
                     <Utensils className="w-5 h-5" />
@@ -297,10 +337,14 @@ export function App() {
 
                 {/* Medication Routine */}
                 <button
-                  onClick={() => setIsMedModalOpen(true)}
-                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800"
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setIsMedModalOpen(true);
+                  }}
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
                 >
-                  <div className="p-2 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 w-fit">
+                  <div className="p-2 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 w-fit">
                     <Pill className="w-5 h-5" />
                   </div>
                   <div>
@@ -311,8 +355,12 @@ export function App() {
 
                 {/* SOS Caregiver */}
                 <button
-                  onClick={() => setIsSOSModalOpen(true)}
-                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 border-rose-200 dark:border-rose-900/60 bg-rose-50/20 dark:bg-rose-950/10"
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setIsSOSModalOpen(true);
+                  }}
+                  className="hallmark-card p-4 text-left active:scale-[0.98] transition-all space-y-2 flex flex-col justify-between hover:bg-slate-50 dark:hover:bg-slate-800 border-rose-200 dark:border-rose-900/60 bg-rose-50/20 dark:bg-rose-950/10 cursor-pointer"
                 >
                   <div className="p-2 rounded-xl bg-rose-500 text-white w-fit shadow-md shadow-rose-500/20">
                     <AlertTriangle className="w-5 h-5" />
@@ -346,8 +394,9 @@ export function App() {
                   </h3>
                   {readings.length > 0 && (
                     <button
+                      type="button"
                       onClick={() => handleTabChange('history')}
-                      className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
+                      className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       Lihat Semua <ArrowRight className="w-3.5 h-3.5" />
                     </button>
@@ -385,17 +434,20 @@ export function App() {
           </div>
         )}
 
-        {/* TAB 2: HISTORY & FILTER */}
+        {/* TAB 2: HISTORY & CALENDAR VIEW */}
         {activeTab === 'history' && (
-          <div className="space-y-4 animate-in fade-in duration-300">
+          <div className="space-y-6 animate-in fade-in duration-300">
             <div>
               <h2 className="text-lg font-black text-slate-900 dark:text-slate-100">
-                Jurnal Tekanan Darah Real
+                Jurnal &amp; Kalender Tekanan Darah Real
               </h2>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Filter tanggal, kata kunci, dan cadangan data terenkripsi
+                Kalender bulanan interaktif, pencarian tanggal terdahulu, dan pencarian data
               </p>
             </div>
+
+            {/* Interactive Calendar System */}
+            <CalendarView readings={rawReadings || []} />
 
             {/* History Filter Bar */}
             <HistoryFilter />
@@ -416,7 +468,7 @@ export function App() {
               </div>
             ) : (
               <div className="p-10 text-center hallmark-card space-y-2">
-                <Calendar className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto" />
+                <CalendarIcon className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto" />
                 <h4 className="text-sm font-extrabold text-slate-700 dark:text-slate-300">
                   Tidak Ada Catatan
                 </h4>
@@ -451,8 +503,12 @@ export function App() {
                 Mencakup identitas <strong>{activeProfile?.name}</strong>, ringkasan rata-rata, rentang min/max, pengelompokkan AHA, dan tabel tensi asli.
               </p>
               <button
-                onClick={() => openExportPdfModal()}
-                className="hallmark-button-primary w-full py-3.5 text-xs inline-flex items-center justify-center gap-2"
+                type="button"
+                onClick={() => {
+                  playClickSound();
+                  openExportPdfModal();
+                }}
+                className="hallmark-button-primary w-full py-3.5 text-xs inline-flex items-center justify-center gap-2 active:scale-95 transition-all"
               >
                 <Download className="w-4 h-4" />
                 Buka Generator Laporan PDF
@@ -484,8 +540,12 @@ export function App() {
                 Pengingat akan membunyikan notifikasi lokal browser di waktu yang disesuaikan.
               </p>
               <button
-                onClick={() => openReminderModal()}
-                className="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-xl shadow-amber-500/25 inline-flex items-center justify-center gap-2"
+                type="button"
+                onClick={() => {
+                  playClickSound();
+                  openReminderModal();
+                }}
+                className="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-xl shadow-amber-500/25 inline-flex items-center justify-center gap-2 active:scale-95 transition-all"
               >
                 <Plus className="w-4 h-4" />
                 Atur Jadwal Pengingat
@@ -499,7 +559,14 @@ export function App() {
       {/* Floating Bottom Navigation Bar (Hidden on desktop via Tailwind md:hidden inside component) */}
       <Navigation activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* Security & Backup Modal Trigger */}
+      {/* Rest Protocol Modal */}
+      <BPRestTimerModal
+        isOpen={isRestTimerOpen}
+        onClose={() => setIsRestTimerOpen(false)}
+        onTimerComplete={() => openReadingModal()}
+      />
+
+      {/* Modals */}
       <SecurityBackupModal
         isOpen={isSecurityModalOpen}
         onClose={() => setIsSecurityModalOpen(false)}
@@ -515,6 +582,21 @@ export function App() {
       <MedicationTrackerModal
         isOpen={isMedModalOpen}
         onClose={() => setIsMedModalOpen(false)}
+      />
+      <HabitsTrackerModal
+        isOpen={isHabitsModalOpen}
+        onClose={() => setIsHabitsModalOpen(false)}
+      />
+
+      {/* Delete Reading Confirmation Modal */}
+      <ConfirmModal
+        isOpen={Boolean(deletingReadingId)}
+        title="Hapus Catatan Tensi?"
+        message="Apakah Anda yakin ingin menghapus data pengukuran ini dari jurnal? Aksi ini tidak dapat dibatalkan."
+        isDangerous={true}
+        confirmText="Ya, Hapus Catatan"
+        onConfirm={handleDeleteReading}
+        onCancel={() => setDeletingReadingId(null)}
       />
 
       {/* Footer */}

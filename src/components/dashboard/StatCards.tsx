@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { BPSummaryStats } from '../../types/blood-pressure';
 import { classifyBP, classifyPulse } from '../../utils/bp-classifier';
 import { formatDateIndonesian } from '../../utils/formatters';
+import { playClickSound } from '../../utils/audio-fx';
 import { Activity, Heart, Calendar, ShieldCheck, Target, BookOpen, Plus, Sparkles, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { KnowledgeGuideModal } from '../common/KnowledgeGuideModal';
@@ -46,8 +47,12 @@ export const StatCards: React.FC<StatCardsProps> = ({ stats, onOpenNewReading })
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setIsGuideOpen(true)}
-                  className="hallmark-button-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5"
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setIsGuideOpen(true);
+                  }}
+                  className="hallmark-button-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5 active:scale-95"
                   title="Panduan Medis Cara Ukur Tensi"
                 >
                   <BookOpen className="w-3.5 h-3.5 text-teal-500" />
@@ -111,8 +116,12 @@ export const StatCards: React.FC<StatCardsProps> = ({ stats, onOpenNewReading })
                 </p>
                 <div className="pt-1">
                   <button
-                    onClick={onOpenNewReading}
-                    className="hallmark-button-primary px-5 py-3 text-xs inline-flex items-center gap-2"
+                    type="button"
+                    onClick={() => {
+                      playClickSound();
+                      onOpenNewReading();
+                    }}
+                    className="hallmark-button-primary px-5 py-3 text-xs inline-flex items-center gap-2 active:scale-95"
                   >
                     <Plus className="w-4 h-4 stroke-[3]" />
                     Catat Tensi Pertama Anda

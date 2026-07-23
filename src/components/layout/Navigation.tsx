@@ -36,6 +36,7 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }
               return (
                 <button
                   key={tab.id}
+                  type="button"
                   onClick={() => {
                     playClickSound();
                     onTabChange(tab.id);
@@ -56,6 +57,7 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }
           {/* Elevated Center Thumb-Reachable FAB (+ Catat Tensi) */}
           <div className="relative -top-5 shrink-0 px-1">
             <motion.button
+              type="button"
               whileTap={{ scale: 0.9 }}
               onClick={() => {
                 playClickSound();
@@ -75,6 +77,7 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }
               return (
                 <button
                   key={tab.id}
+                  type="button"
                   onClick={() => {
                     playClickSound();
                     onTabChange(tab.id);
