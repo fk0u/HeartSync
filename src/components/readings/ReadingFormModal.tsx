@@ -5,10 +5,10 @@ import { db } from '../../db';
 import { classifyBP } from '../../utils/bp-classifier';
 import { BodyPosition, ArmUsed } from '../../types/blood-pressure';
 import { playClickSound, playSuccessChime } from '../../utils/audio-fx';
+import { startVoiceBPRecognition } from '../../utils/voice-recognition';
 import { sanitizeText, validateBPRange } from '../../security/sanitizer';
-import { computeAuditHash } from '../../security/hasher';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Minus, Heart, Calendar, Clock, Tag, MessageSquare, Check } from 'lucide-react';
+import { X, Plus, Minus, Heart, Calendar, Clock, Tag, MessageSquare, Check, Mic, MicOff } from 'lucide-react';
 import { format } from 'date-fns';
 
 export const ReadingFormModal: React.FC = () => {
@@ -29,6 +29,38 @@ export const ReadingFormModal: React.FC = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>(['Bangun Tidur']);
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isListeningVoice, setIsListeningVoice] = useState(false);
+
+  const handleStartVoiceDictation = () => {
+    playClickSound();
+    setIsListeningVoice(true);
+    addToast({
+      type: 'info',
+      title: 'Mendengarkan Dikte Suara...',
+      message: 'Ucapkan tensi Anda (Contoh: "Tensi 120 per 80 nadi 72")'
+    });
+
+    startVoiceBPRecognition(
+      (parsed) => {
+        if (parsed.systolic) setSystolic(parsed.systolic);
+        if (parsed.diastolic) setDiastolic(parsed.diastolic);
+        if (parsed.pulse) setPulse(parsed.pulse);
+
+        playSuccessChime();
+        addToast({
+          type: 'success',
+          title: 'Dikte Suara Diterima!',
+          message: `Terdeteksi: ${parsed.systolic || '-'}/${parsed.diastolic || '-'} mmHg${parsed.pulse ? `, Nadi ${parsed.pulse}` : ''}`
+        });
+      },
+      (errorMsg) => {
+        addToast({ type: 'warning', title: 'Dikte Suara', message: errorMsg });
+      },
+      () => {
+        setIsListeningVoice(false);
+      }
+    );
+  };
 
   // Available tag choices
   const availableTags = [
@@ -171,12 +203,27 @@ export const ReadingFormModal: React.FC = () => {
             <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">
               {editingReading ? 'Edit Catatan Tensi Real' : 'Catat Tekanan Darah Real'}
             </h3>
-            <button
-              onClick={closeModal}
-              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleStartVoiceDictation}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs shadow-sm transition-all active:scale-95 ${
+                  isListeningVoice
+                    ? 'bg-rose-500 text-white animate-pulse'
+                    : 'bg-teal-500/10 text-teal-600 dark:text-teal-400 hover:bg-teal-500/20'
+                }`}
+                title="Dikte Suara Hasil Tensi (Web Speech API)"
+              >
+                {isListeningVoice ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                <span>{isListeningVoice ? 'Mendengarkan...' : 'Dikte Suara'}</span>
+              </button>
+              <button
+                onClick={closeModal}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Form Body */}
