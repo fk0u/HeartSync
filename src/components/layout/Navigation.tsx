@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { playClickSound } from '../../utils/audio-fx';
-import { LayoutDashboard, History, FileText, Bell, Plus } from 'lucide-react';
+import { LayoutDashboard, History, FileText, Bell, Plus, MoreHorizontal, UserRound, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export type NavTab = 'dashboard' | 'history' | 'reports' | 'reminders';
@@ -13,6 +13,7 @@ interface NavigationProps {
 
 export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const openReadingModal = useAppStore((state) => state.openReadingModal);
+  const openMobileToolsSheet = useAppStore((state) => state.openMobileToolsSheet);
 
   const tabs: { id: NavTab; label: string; icon: React.ReactNode }[] = [
     { id: 'dashboard', label: 'Ringkasan', icon: <LayoutDashboard className="w-5 h-5" /> },
@@ -22,16 +23,11 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }
   ];
 
   return (
-    // Hide bottom navigation on desktop viewports using md:hidden
-    <nav className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-safe pt-2 bg-gradient-to-t from-slate-950/90 via-slate-950/80 to-transparent pointer-events-none md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 px-3 pb-safe pt-2 bg-gradient-to-t from-slate-950/95 via-slate-950/80 to-transparent pointer-events-none md:hidden">
       <div className="max-w-md mx-auto relative pointer-events-auto">
-        
-        {/* Floating iOS / APK Native Tab Container */}
-        <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800 rounded-full p-1.5 shadow-2xl flex items-center justify-between shadow-slate-900/20">
-          
-          {/* Left 2 Tabs */}
-          <div className="flex items-center justify-around flex-1 pr-4">
-            {tabs.slice(0, 2).map((tab) => {
+        <div className="bg-white/92 dark:bg-slate-900/92 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800 rounded-[28px] px-2 py-2 shadow-2xl shadow-slate-950/20">
+          <div className="grid grid-cols-5 gap-1.5 items-end">
+            {tabs.map((tab) => {
               const isSelected = activeTab === tab.id;
               return (
                 <button
@@ -41,60 +37,56 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }
                     playClickSound();
                     onTabChange(tab.id);
                   }}
-                  className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-full transition-all duration-200 ${
+                  className={`min-h-14 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all duration-150 active:scale-95 ${
                     isSelected
-                      ? 'text-teal-600 dark:text-teal-400 font-extrabold scale-105'
-                      : 'text-slate-500 dark:text-slate-400 font-medium hover:text-slate-800'
+                      ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/20'
+                      : 'bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-300'
                   }`}
                 >
                   {tab.icon}
-                  <span className="text-[10px] tracking-tight">{tab.label}</span>
+                  <span className="text-[10px] font-bold leading-none">{tab.label}</span>
                 </button>
               );
             })}
-          </div>
 
-          {/* Elevated Center Thumb-Reachable FAB (+ Catat Tensi) */}
-          <div className="relative -top-5 shrink-0 px-1">
-            <motion.button
+            <button
               type="button"
-              whileTap={{ scale: 0.9 }}
               onClick={() => {
                 playClickSound();
                 openReadingModal();
               }}
-              className="w-14 h-14 rounded-full bg-gradient-to-tr from-teal-500 to-sky-500 text-white shadow-xl shadow-teal-500/40 flex items-center justify-center border-4 border-slate-50 dark:border-slate-950 active:scale-90 transition-transform"
-              title="Catat Tensi Baru"
+              className="min-h-14 rounded-2xl flex flex-col items-center justify-center gap-1 bg-gradient-to-tr from-teal-500 to-sky-500 text-white shadow-lg shadow-teal-500/25 active:scale-95 transition-all"
             >
-              <Plus className="w-7 h-7 stroke-[3]" />
-            </motion.button>
+              <Plus className="w-5 h-5 stroke-[3]" />
+              <span className="text-[10px] font-bold leading-none">Catat</span>
+            </button>
           </div>
 
-          {/* Right 2 Tabs */}
-          <div className="flex items-center justify-around flex-1 pl-4">
-            {tabs.slice(2, 4).map((tab) => {
-              const isSelected = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => {
-                    playClickSound();
-                    onTabChange(tab.id);
-                  }}
-                  className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-full transition-all duration-200 ${
-                    isSelected
-                      ? 'text-teal-600 dark:text-teal-400 font-extrabold scale-105'
-                      : 'text-slate-500 dark:text-slate-400 font-medium hover:text-slate-800'
-                  }`}
-                >
-                  {tab.icon}
-                  <span className="text-[10px] tracking-tight">{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                playClickSound();
+                openMobileToolsSheet();
+              }}
+              className="min-h-12 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center gap-2 font-extrabold text-xs active:scale-95 transition-all"
+            >
+              <MoreHorizontal className="w-4 h-4" />
+              Lainnya
+            </button>
 
+            <button
+              type="button"
+              onClick={() => {
+                playClickSound();
+                openReadingModal();
+              }}
+              className="min-h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center gap-2 font-extrabold text-xs active:scale-95 transition-all"
+            >
+              <Bell className="w-4 h-4" />
+              Pengingat Cepat
+            </button>
+          </div>
         </div>
       </div>
     </nav>

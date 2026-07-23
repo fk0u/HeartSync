@@ -24,6 +24,7 @@ interface AppState {
   isProfileModalOpen: boolean;
   isExportPdfModalOpen: boolean;
   isReminderModalOpen: boolean;
+  isMobileToolsSheetOpen: boolean;
   
   // Toasts
   toasts: ToastMessage[];
@@ -50,6 +51,8 @@ interface AppState {
   closeExportPdfModal: () => void;
   openReminderModal: () => void;
   closeReminderModal: () => void;
+  openMobileToolsSheet: () => void;
+  closeMobileToolsSheet: () => void;
 
   // Cache & Loading Actions
   setDataLoading: (loading: boolean) => void;
@@ -76,6 +79,7 @@ export const useAppStore = create<AppState>((set) => ({
   isProfileModalOpen: false,
   isExportPdfModalOpen: false,
   isReminderModalOpen: false,
+  isMobileToolsSheetOpen: false,
 
   toasts: [],
 
@@ -109,6 +113,9 @@ export const useAppStore = create<AppState>((set) => ({
 
   openReminderModal: () => set({ isReminderModalOpen: true }),
   closeReminderModal: () => set({ isReminderModalOpen: false }),
+
+  openMobileToolsSheet: () => set({ isMobileToolsSheetOpen: true }),
+  closeMobileToolsSheet: () => set({ isMobileToolsSheetOpen: false }),
 
   // Caching setters
   setDataLoading: (loading) => set({ isDataLoading: loading }),

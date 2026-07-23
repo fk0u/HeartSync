@@ -5,6 +5,7 @@ import { seedInitialData, db } from './db';
 import { useProfiles } from './hooks/useProfiles';
 import { useReadings } from './hooks/useReadings';
 import { useAppStore } from './store/useAppStore';
+import { getScreenKey, isPrimaryTab, primaryTabPaths } from './utils/navigation';
 import { speakTextIndonesian } from './utils/speech-reader';
 import { classifyBP } from './utils/bp-classifier';
 import { playClickSound, playSuccessChime } from './utils/audio-fx';
@@ -40,6 +41,9 @@ import { SodiumTrackerModal } from './components/dash/SodiumTrackerModal';
 import { FamilySOSModal } from './components/emergency/FamilySOSModal';
 import { MedicationTrackerModal } from './components/meds/MedicationTrackerModal';
 import { HabitsTrackerModal } from './components/habits/HabitsTrackerModal';
+import { ProfilePage } from './components/pages/ProfilePage';
+import { SettingsPage } from './components/pages/SettingsPage';
+import { MobileToolsSheet } from './components/layout/MobileToolsSheet';
 
 // Icons
 import {
@@ -64,15 +68,16 @@ import {
 export function App() {
   const routerState = useRouterState();
   const navigate = useNavigate();
+  const theme = useAppStore((state) => state.theme);
+  const setTheme = useAppStore((state) => state.setTheme);
 
-  const activeTab: NavTab =
-    routerState.location.pathname === '/' ? 'dashboard' :
-    routerState.location.pathname === '/history' ? 'history' :
-    routerState.location.pathname === '/reports' ? 'reports' :
-    routerState.location.pathname === '/reminders' ? 'reminders' : 'dashboard';
+  const screenKey = getScreenKey(routerState.location.pathname);
+
+  const activeTab: NavTab = isPrimaryTab(screenKey) ? screenKey : 'dashboard';
+  const showPrimaryNavigation = isPrimaryTab(screenKey);
 
   const handleTabChange = (tab: NavTab) => {
-    navigate({ to: tab === 'dashboard' ? '/' : `/${tab}` });
+    navigate({ to: primaryTabPaths[tab] });
   };
 
   const [isDbReady, setIsDbReady] = useState(false);
@@ -101,6 +106,36 @@ export function App() {
 
   // Deleting reading confirmation state
   const [deletingReadingId, setDeletingReadingId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('heartsync-theme');
+    if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'system') {
+      setTheme(savedTheme);
+    }
+  }, [setTheme]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const applyTheme = () => {
+      const resolvedTheme = theme === 'system' ? (mediaQuery.matches ? 'dark' : 'light') : theme;
+      root.classList.toggle('dark', resolvedTheme === 'dark');
+      root.style.colorScheme = resolvedTheme;
+      localStorage.setItem('heartsync-theme', theme);
+    };
+
+    applyTheme();
+
+    const handleMediaChange = () => {
+      if (theme === 'system') {
+        applyTheme();
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleMediaChange);
+    return () => mediaQuery.removeEventListener('change', handleMediaChange);
+  }, [theme]);
 
   // Initialize DB
   useEffect(() => {
@@ -206,7 +241,13 @@ export function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
-        
+
+        {screenKey === 'profile' ? (
+          <ProfilePage />
+        ) : screenKey === 'settings' ? (
+          <SettingsPage />
+        ) : (
+          <>
         {/* TAB 1: DASHBOARD */}
         {activeTab === 'dashboard' && (
           <div className="space-y-6 animate-in fade-in duration-300">
@@ -554,10 +595,15 @@ export function App() {
           </div>
         )}
 
+          </>
+        )}
+
       </main>
 
       {/* Floating Bottom Navigation Bar (Hidden on desktop via Tailwind md:hidden inside component) */}
-      <Navigation activeTab={activeTab} onTabChange={handleTabChange} />
+      {showPrimaryNavigation && <Navigation activeTab={activeTab} onTabChange={handleTabChange} />}
+
+      <MobileToolsSheet />
 
       {/* Rest Protocol Modal */}
       <BPRestTimerModal

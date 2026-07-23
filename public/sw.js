@@ -1,4 +1,4 @@
-const CACHE_NAME = 'heartsync-v2';
+const CACHE_NAME = 'heartsync-v3';
 const ASSETS = [
   '/',
   '/index.html',
@@ -32,20 +32,28 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event (Network-First / Cache Fallback)
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Fetch new version in background to update cache
         fetch(event.request)
           .then((networkResponse) => {
             if (networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
+              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse.clone()));
             }
           })
           .catch(() => { /* ignore offline fetch error */ });
         return cachedResponse;
       }
-      return fetch(event.request);
+
+      if (event.request.mode === 'navigate') {
+        return fetch(event.request).catch(() => caches.match('/index.html'));
+      }
+
+      return fetch(event.request).catch(() => caches.match('/index.html'));
     })
   );
 });

@@ -3,7 +3,7 @@ import { useRouterState, useNavigate } from '@tanstack/react-router';
 import { CustomProfileSelector } from '../profiles/CustomProfileSelector';
 import { NavTab } from './Navigation';
 import { playClickSound } from '../../utils/audio-fx';
-import { Heart, LayoutDashboard, History, FileText, Bell, Plus } from 'lucide-react';
+import { Heart, LayoutDashboard, History, FileText, Bell, Plus, Settings, UserRound } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 
 export const DesktopHeader: React.FC = () => {
@@ -76,6 +76,30 @@ export const DesktopHeader: React.FC = () => {
 
         {/* Right: Actions & Custom Profile Selector */}
         <div className="flex items-center gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              playClickSound();
+              navigate({ to: '/profile' });
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 font-extrabold text-xs transition-all active:scale-95"
+          >
+            <UserRound className="w-4 h-4" />
+            Profil
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              playClickSound();
+              navigate({ to: '/settings' });
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 font-extrabold text-xs transition-all active:scale-95"
+          >
+            <Settings className="w-4 h-4" />
+            Pengaturan
+          </button>
+
           <button
             type="button"
             onClick={() => {

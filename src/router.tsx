@@ -32,11 +32,23 @@ const remindersRoute = createRoute({
   path: '/reminders',
 });
 
+const profileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/profile',
+});
+
+const settingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/settings',
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   historyRoute,
   reportsRoute,
   remindersRoute,
+  profileRoute,
+  settingsRoute,
 ]);
 
 export const router = createRouter({ routeTree });
