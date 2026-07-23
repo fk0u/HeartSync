@@ -45,6 +45,9 @@ import { ProfilePage } from './components/pages/ProfilePage';
 import { SettingsPage } from './components/pages/SettingsPage';
 import { MobileToolsSheet } from './components/layout/MobileToolsSheet';
 
+// Bluetooth pairing
+import { DevicePairingButton } from './components/bluetooth/DevicePairingButton';
+
 // Icons
 import {
   Plus,
@@ -325,6 +328,9 @@ export function App() {
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 md:gap-3">
                 
+                {/* Bluetooth BP Monitor Pairing */}
+                <DevicePairingButton />
+
                 {/* Habits & Sleep Tracker */}
                 <button
                   type="button"
