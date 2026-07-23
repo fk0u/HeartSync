@@ -1,12 +1,8 @@
 import React from 'react';
-import {
-  LayoutDashboard,
-  History,
-  FileText,
-  Bell,
-  Plus
-} from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { playClickSound } from '../../utils/audio-fx';
+import { LayoutDashboard, History, FileText, Bell, Plus } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export type NavTab = 'dashboard' | 'history' | 'reports' | 'reminders';
 
@@ -18,102 +14,86 @@ interface NavigationProps {
 export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const openReadingModal = useAppStore((state) => state.openReadingModal);
 
-  const navItems = [
-    { id: 'dashboard' as NavTab, label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'history' as NavTab, label: 'Riwayat', icon: History },
-    { id: 'reports' as NavTab, label: 'Laporan Dokter', icon: FileText },
-    { id: 'reminders' as NavTab, label: 'Pengingat', icon: Bell },
+  const tabs: { id: NavTab; label: string; icon: React.ReactNode }[] = [
+    { id: 'dashboard', label: 'Ringkasan', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { id: 'history', label: 'Jurnal', icon: <History className="w-5 h-5" /> },
+    { id: 'reports', label: 'Dokter', icon: <FileText className="w-5 h-5" /> },
+    { id: 'reminders', label: 'Jadwal', icon: <Bell className="w-5 h-5" /> }
   ];
 
   return (
-    <>
-      {/* Desktop Top Tabs Navigation */}
-      <div className="hidden md:block bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
+    // Hide bottom navigation on desktop viewports using md:hidden
+    <nav className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-safe pt-2 bg-gradient-to-t from-slate-950/90 via-slate-950/80 to-transparent pointer-events-none md:hidden">
+      <div className="max-w-md mx-auto relative pointer-events-auto">
+        
+        {/* Floating iOS / APK Native Tab Container */}
+        <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800 rounded-full p-1.5 shadow-2xl flex items-center justify-between shadow-slate-900/20">
+          
+          {/* Left 2 Tabs */}
+          <div className="flex items-center justify-around flex-1 pr-4">
+            {tabs.slice(0, 2).map((tab) => {
+              const isSelected = activeTab === tab.id;
               return (
                 <button
-                  key={item.id}
-                  onClick={() => onTabChange(item.id)}
-                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-semibold text-sm transition-colors duration-200 ${
-                    isActive
-                      ? 'border-teal-500 text-teal-600 dark:text-teal-400'
-                      : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+                  key={tab.id}
+                  onClick={() => {
+                    playClickSound();
+                    onTabChange(tab.id);
+                  }}
+                  className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-full transition-all duration-200 ${
+                    isSelected
+                      ? 'text-teal-600 dark:text-teal-400 font-extrabold scale-105'
+                      : 'text-slate-500 dark:text-slate-400 font-medium hover:text-slate-800'
                   }`}
                 >
-                  <Icon className={`w-4.5 h-4.5 ${isActive ? 'text-teal-500' : ''}`} />
-                  {item.label}
+                  {tab.icon}
+                  <span className="text-[10px] tracking-tight">{tab.label}</span>
                 </button>
               );
             })}
-          </nav>
-        </div>
-      </div>
-
-      {/* Mobile Bottom Navigation Bar & FAB */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 pb-safe">
-        <div className="flex items-center justify-around h-16 px-2 relative">
-          
-          {/* Dashboard Tab */}
-          <button
-            onClick={() => onTabChange('dashboard')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
-              activeTab === 'dashboard' ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'
-            }`}
-          >
-            <LayoutDashboard className="w-5 h-5" />
-            <span className="text-[10px] font-medium mt-1">Dashboard</span>
-          </button>
-
-          {/* History Tab */}
-          <button
-            onClick={() => onTabChange('history')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
-              activeTab === 'history' ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'
-            }`}
-          >
-            <History className="w-5 h-5" />
-            <span className="text-[10px] font-medium mt-1">Riwayat</span>
-          </button>
-
-          {/* Center Mobile FAB Button */}
-          <div className="flex-1 flex justify-center -mt-6">
-            <button
-              onClick={() => openReadingModal()}
-              className="w-13 h-13 rounded-full bg-gradient-to-tr from-teal-500 to-sky-500 text-white flex items-center justify-center shadow-xl shadow-teal-500/40 active:scale-90 transition-transform duration-200"
-              aria-label="Catat Tensi"
-            >
-              <Plus className="w-7 h-7 stroke-[2.5]" />
-            </button>
           </div>
 
-          {/* Reports Tab */}
-          <button
-            onClick={() => onTabChange('reports')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
-              activeTab === 'reports' ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'
-            }`}
-          >
-            <FileText className="w-5 h-5" />
-            <span className="text-[10px] font-medium mt-1">Laporan</span>
-          </button>
+          {/* Elevated Center Thumb-Reachable FAB (+ Catat Tensi) */}
+          <div className="relative -top-5 shrink-0 px-1">
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => {
+                playClickSound();
+                openReadingModal();
+              }}
+              className="w-14 h-14 rounded-full bg-gradient-to-tr from-teal-500 to-sky-500 text-white shadow-xl shadow-teal-500/40 flex items-center justify-center border-4 border-slate-50 dark:border-slate-950 active:scale-90 transition-transform"
+              title="Catat Tensi Baru"
+            >
+              <Plus className="w-7 h-7 stroke-[3]" />
+            </motion.button>
+          </div>
 
-          {/* Reminders Tab */}
-          <button
-            onClick={() => onTabChange('reminders')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
-              activeTab === 'reminders' ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'
-            }`}
-          >
-            <Bell className="w-5 h-5" />
-            <span className="text-[10px] font-medium mt-1">Pengingat</span>
-          </button>
+          {/* Right 2 Tabs */}
+          <div className="flex items-center justify-around flex-1 pl-4">
+            {tabs.slice(2, 4).map((tab) => {
+              const isSelected = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    playClickSound();
+                    onTabChange(tab.id);
+                  }}
+                  className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-full transition-all duration-200 ${
+                    isSelected
+                      ? 'text-teal-600 dark:text-teal-400 font-extrabold scale-105'
+                      : 'text-slate-500 dark:text-slate-400 font-medium hover:text-slate-800'
+                  }`}
+                >
+                  {tab.icon}
+                  <span className="text-[10px] tracking-tight">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
         </div>
       </div>
-    </>
+    </nav>
   );
 };
