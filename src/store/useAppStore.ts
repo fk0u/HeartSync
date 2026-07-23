@@ -27,6 +27,12 @@ interface AppState {
   // Toasts
   toasts: ToastMessage[];
 
+  // Advanced Caching & Refresh state
+  isDataLoading: boolean;
+  isDataRefreshing: boolean;
+  cacheTimestamp: number | null;
+  isCacheDirty: boolean;
+
   // Actions
   setActiveProfileId: (id: string) => void;
   setDateFilter: (range: DateFilterRange, start?: string, end?: string) => void;
@@ -43,6 +49,12 @@ interface AppState {
   closeExportPdfModal: () => void;
   openReminderModal: () => void;
   closeReminderModal: () => void;
+
+  // Cache & Loading Actions
+  setDataLoading: (loading: boolean) => void;
+  setDataRefreshing: (refreshing: boolean) => void;
+  setCacheDirty: (dirty: boolean) => void;
+  updateCacheTimestamp: () => void;
 
   // Toast actions
   addToast: (toast: Omit<ToastMessage, 'id'>) => void;
@@ -66,9 +78,15 @@ export const useAppStore = create<AppState>((set) => ({
 
   toasts: [],
 
-  setActiveProfileId: (id) => set({ activeProfileId: id }),
+  // Cache and load initial states
+  isDataLoading: false,
+  isDataRefreshing: false,
+  cacheTimestamp: null,
+  isCacheDirty: true,
+
+  setActiveProfileId: (id) => set({ activeProfileId: id, isCacheDirty: true }),
   setDateFilter: (range, start = null, end = null) =>
-    set({ dateFilter: range, customStartDate: start, customEndDate: end }),
+    set({ dateFilter: range, customStartDate: start, customEndDate: end, isCacheDirty: true }),
   setSearchQuery: (query) => set({ searchQuery: query }),
   setCategoryFilter: (category) => set({ categoryFilter: category }),
   setTheme: (theme) => set({ theme }),
@@ -85,6 +103,12 @@ export const useAppStore = create<AppState>((set) => ({
 
   openReminderModal: () => set({ isReminderModalOpen: true }),
   closeReminderModal: () => set({ isReminderModalOpen: false }),
+
+  // Caching setters
+  setDataLoading: (loading) => set({ isDataLoading: loading }),
+  setDataRefreshing: (refreshing) => set({ isDataRefreshing: refreshing }),
+  setCacheDirty: (dirty) => set({ isCacheDirty: dirty }),
+  updateCacheTimestamp: () => set({ cacheTimestamp: Date.now(), isCacheDirty: false }),
 
   addToast: (toast) => {
     const id = Math.random().toString(36).substring(2, 9);

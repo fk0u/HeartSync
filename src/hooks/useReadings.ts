@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
 import { useAppStore } from '../store/useAppStore';
@@ -15,6 +15,11 @@ export function useReadings() {
   const searchQuery = useAppStore((state) => state.searchQuery);
   const categoryFilter = useAppStore((state) => state.categoryFilter);
 
+  // Cache actions
+  const isDataLoading = useAppStore((state) => state.isDataLoading);
+  const setDataLoading = useAppStore((state) => state.setDataLoading);
+  const updateCacheTimestamp = useAppStore((state) => state.updateCacheTimestamp);
+
   const { activeProfile } = useProfiles();
 
   // Fetch all readings for active profile sorted by timestamp desc
@@ -30,6 +35,16 @@ export function useReadings() {
     [activeProfileId],
     [] as BPReading[]
   );
+
+  // Set loading state dynamically based on Dexie resolution
+  useEffect(() => {
+    if (rawReadings === undefined) {
+      setDataLoading(true);
+    } else {
+      setDataLoading(false);
+      updateCacheTimestamp();
+    }
+  }, [rawReadings, setDataLoading, updateCacheTimestamp]);
 
   // Filtered readings based on store filters
   const filteredReadings = useMemo(() => {
@@ -174,6 +189,7 @@ export function useReadings() {
     rawReadings,
     readings: filteredReadings,
     stats,
-    hasData: filteredReadings.length > 0
+    hasData: filteredReadings.length > 0,
+    isLoading: isDataLoading
   };
 }

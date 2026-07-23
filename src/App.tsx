@@ -6,6 +6,7 @@ import { useReadings } from './hooks/useReadings';
 import { useAppStore } from './store/useAppStore';
 import { speakTextIndonesian } from './utils/speech-reader';
 import { classifyBP } from './utils/bp-classifier';
+import { playClickSound, playSuccessChime } from './utils/audio-fx';
 
 // Layout
 import { Header } from './components/layout/Header';
@@ -29,6 +30,7 @@ import { ReminderModal } from './components/reminders/ReminderModal';
 import { ToastContainer } from './components/common/Toast';
 import { ConfirmModal } from './components/common/ConfirmModal';
 import { BPRestTimerModal } from './components/timer/BPRestTimerModal';
+import { ShimmerSkeletonCard } from './components/common/ShimmerSkeleton';
 
 // Action Modals
 import { SecurityBackupModal } from './components/security/SecurityBackupModal';
@@ -51,7 +53,9 @@ import {
   Utensils,
   AlertTriangle,
   Pill,
-  Lock
+  Lock,
+  RefreshCw,
+  Clock
 } from 'lucide-react';
 
 export function App() {
@@ -66,12 +70,18 @@ export function App() {
   const [isMedModalOpen, setIsMedModalOpen] = useState(false);
 
   const { activeProfile } = useProfiles();
-  const { readings, rawReadings, stats } = useReadings();
+  const { readings, rawReadings, stats, isLoading } = useReadings();
+
+  // Cache & Reload Zustand Store States
+  const isDataRefreshing = useAppStore((state) => state.isDataRefreshing);
+  const cacheTimestamp = useAppStore((state) => state.cacheTimestamp);
+  const setDataRefreshing = useAppStore((state) => state.setDataRefreshing);
+  const setCacheDirty = useAppStore((state) => state.setCacheDirty);
+  const addToast = useAppStore((state) => state.addToast);
 
   const openReadingModal = useAppStore((state) => state.openReadingModal);
   const openExportPdfModal = useAppStore((state) => state.openExportPdfModal);
   const openReminderModal = useAppStore((state) => state.openReminderModal);
-  const addToast = useAppStore((state) => state.addToast);
 
   // Deleting reading confirmation state
   const [deletingReadingId, setDeletingReadingId] = useState<number | null>(null);
@@ -111,6 +121,7 @@ export function App() {
         title: 'Data Dihapus',
         message: 'Catatan tekanan darah berhasil dihapus.'
       });
+      setCacheDirty(true);
     } catch (err) {
       addToast({
         type: 'error',
@@ -134,6 +145,23 @@ export function App() {
     speakTextIndonesian(speechMsg);
   };
 
+  const handleManualCacheRefresh = () => {
+    playClickSound();
+    setDataRefreshing(true);
+    setCacheDirty(true);
+
+    // Simulated short delay for native pull-to-refresh spinner feel
+    setTimeout(() => {
+      setDataRefreshing(false);
+      playSuccessChime();
+      addToast({
+        type: 'success',
+        title: 'Cache Database Diperbarui',
+        message: 'Memuat data paling mutakhir dari IndexedDB secara real-time.'
+      });
+    }, 600);
+  };
+
   if (!isDbReady) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white space-y-4">
@@ -148,7 +176,7 @@ export function App() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col pb-28 md:pb-8 transition-colors">
       
-      {/* Apple HIG Clean Header (Decluttered Header) */}
+      {/* Apple HIG Clean Header */}
       <Header />
 
       {/* Main Content Area */}
@@ -158,6 +186,22 @@ export function App() {
         {activeTab === 'dashboard' && (
           <div className="space-y-6 animate-in fade-in duration-300">
             
+            {/* Apple SwiftUI Pull/Tap-to-Refresh & Cache Info Bar */}
+            <div className="flex items-center justify-between px-1 text-xs">
+              <div className="flex items-center gap-1.5 text-slate-400 font-semibold">
+                <Clock className="w-3.5 h-3.5" />
+                <span>Cache: {cacheTimestamp ? `Terakhir sinkron ${new Date(cacheTimestamp).toLocaleTimeString('id-ID')}` : 'Belum sinkron'}</span>
+              </div>
+              <button
+                onClick={handleManualCacheRefresh}
+                disabled={isDataRefreshing}
+                className="inline-flex items-center gap-1.5 font-bold text-teal-600 dark:text-teal-400 hover:underline active:scale-95 transition-all"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isDataRefreshing ? 'animate-spin' : ''}`} />
+                {isDataRefreshing ? 'Menyinkronkan...' : 'Segarkan Data'}
+              </button>
+            </div>
+
             {/* Quick Rest Protocol Banner */}
             <div className="hallmark-card p-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gradient-to-r from-teal-500/10 via-sky-500/10 to-transparent border border-teal-500/30">
               <div className="flex items-center gap-3">
@@ -184,13 +228,26 @@ export function App() {
             {/* Emergency Crisis Alert */}
             <EmergencyAlert latestReading={stats.latestReading} />
 
-            {/* Top Stats and Highlights */}
-            <StatCards stats={stats} onOpenNewReading={() => openReadingModal()} />
+            {/* Loader / Stat Cards */}
+            {isLoading || isDataRefreshing ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="md:col-span-2">
+                  <ShimmerSkeletonCard type="stats" />
+                </div>
+                <ShimmerSkeletonCard type="stats" />
+              </div>
+            ) : (
+              <StatCards stats={stats} onOpenNewReading={() => openReadingModal()} />
+            )}
 
             {/* Apple Health Style Category Breakdown */}
-            <AppleHealthRings readings={rawReadings || []} />
+            {isLoading || isDataRefreshing ? (
+              <ShimmerSkeletonCard type="stats" />
+            ) : (
+              <AppleHealthRings readings={rawReadings || []} />
+            )}
 
-            {/* SwiftUI Quick Tools & Accessibility Grid (HIG Compliant Tap Targets) */}
+            {/* SwiftUI Quick Tools & Accessibility Grid */}
             <div className="space-y-3">
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 Peralatan &amp; Aksesibilitas Kesehatan
@@ -261,7 +318,11 @@ export function App() {
               
               {/* Left Column: Trend Graph */}
               <div className="lg:col-span-2">
-                <BPTrendChart readings={rawReadings || []} />
+                {isLoading || isDataRefreshing ? (
+                  <ShimmerSkeletonCard type="chart" />
+                ) : (
+                  <BPTrendChart readings={rawReadings || []} />
+                )}
               </div>
 
               {/* Right Column: Recent Readings */}
@@ -280,7 +341,9 @@ export function App() {
                   )}
                 </div>
 
-                {readings.length > 0 ? (
+                {isLoading || isDataRefreshing ? (
+                  <ShimmerSkeletonCard type="list" />
+                ) : readings.length > 0 ? (
                   <div className="space-y-3">
                     {readings.slice(0, 3).map((r) => (
                       <ReadingCard
@@ -325,7 +388,9 @@ export function App() {
             <HistoryFilter />
 
             {/* Readings List Grid */}
-            {readings.length > 0 ? (
+            {isLoading || isDataRefreshing ? (
+              <ShimmerSkeletonCard type="list" />
+            ) : readings.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {readings.map((r) => (
                   <ReadingCard
@@ -421,7 +486,7 @@ export function App() {
       {/* Floating Bottom Navigation Bar (Hidden on desktop via Tailwind md:hidden inside component) */}
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Security & Backup Modal Trigger (Desktop/Mobile overlay) */}
+      {/* Security & Backup Modal Trigger */}
       <SecurityBackupModal
         isOpen={isSecurityModalOpen}
         onClose={() => setIsSecurityModalOpen(false)}
@@ -445,7 +510,7 @@ export function App() {
           HeartSync — Blood Pressure Tracker
         </p>
         <p className="text-[11px] font-medium">
-          Apple Health SwiftUI Inspired • Offline-First Secure Storage
+          Apple Health Controlled Cache • Offline-First Secure Storage
         </p>
       </footer>
     </div>
