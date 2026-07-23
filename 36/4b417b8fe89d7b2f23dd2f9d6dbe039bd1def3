@@ -1,0 +1,55 @@
+src/utils/backup.ts
+  s_3c330e4c140584::t_ec02f1379f6023 1-87
+src/utils/navigation.ts
+  s_3c330e4c140584::t_ec02f1379f6023 1-28
+public/sw.js
+  s_3c330e4c140584::t_ec02f1379f6023 1,35-38,45,51-56
+src/components/layout/MobileHeader.tsx
+  s_3c330e4c140584::t_14dad76c1f380d 6,10,13-14,22,24,27-34,44,56,60-71
+  s_3c330e4c140584::t_8b1dab9a622212 3,37-43,45-55,57-59,72-76
+src/components/pages/ProfilePage.tsx
+  s_3c330e4c140584::t_ec02f1379f6023 1-184
+src/components/layout/Navigation.tsx
+  s_3c330e4c140584::t_14dad76c1f380d 4,16,26,28-30,40,42-43,47,52,58,60-62,65-76,78-88
+  s_3c330e4c140584::t_064b66ce9eeb4d 89
+src/App.tsx
+  s_3c330e4c140584::t_4c36ca5a508638 8,44-45,71-72,74-77,80,110-139,244-250,598-600,604
+  s_3c330e4c140584::t_8fa6915c3b2af2 46,605-606
+src/index.css
+  s_3c330e4c140584::t_d2005493b80afb 41-67,98-104
+  s_3c330e4c140584::t_fde687d8ab8ee9 105
+src/components/layout/DesktopHeader.tsx
+  s_3c330e4c140584::t_8b1dab9a622212 6,79-102
+src/store/useAppStore.ts
+  s_3c330e4c140584::t_3bc6bd98b0af2f 27,54-55,82,117-118
+  s_3c330e4c140584::t_d1aff9b5ccdb4d 119
+src/components/layout/MobileToolsSheet.tsx
+  h_b7c579e3972573 1-159
+src/components/pages/SettingsPage.tsx
+  s_3c330e4c140584::t_1ecbfa63ceea61 172-173
+  s_3c330e4c140584::t_992ae394b88895 150,154
+  s_3c330e4c140584::t_ec02f1379f6023 1-149,151-153,155-171,174-299
+src/router.tsx
+  s_3c330e4c140584::t_8b1dab9a622212 35-44,50-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "364b417b8fe89d7b2f23dd2f9d6dbe039bd1def3",
+  "prompts": {},
+  "humans": {
+    "h_b7c579e3972573": {
+      "author": "AG-MacMini <kou.real@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_3c330e4c140584": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6342bf13-3703-4c61-939f-4c09988c71dc",
+        "model": "gpt-4.1"
+      },
+      "human_author": "AG-MacMini <kou.real@outlook.com>"
+    }
+  }
+}
